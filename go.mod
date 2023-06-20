@@ -1,4 +1,4 @@
-module github.com/crossplane/provider-simplejsonapp
+module github.com/chaitanyakolluru/provider-simplejsonapp
 
 go 1.19
 

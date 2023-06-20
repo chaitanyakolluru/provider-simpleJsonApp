@@ -36,10 +36,10 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 
-	"github.com/crossplane/provider-simplejsonapp/apis"
-	"github.com/crossplane/provider-simplejsonapp/apis/v1alpha1"
-	simplejsonapp "github.com/crossplane/provider-simplejsonapp/internal/controller"
-	"github.com/crossplane/provider-simplejsonapp/internal/features"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/apis"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
+	simplejsonapp "github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/features"
 )
 
 func main() {

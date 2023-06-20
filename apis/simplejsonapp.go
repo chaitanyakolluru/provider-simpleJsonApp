@@ -20,8 +20,8 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	recordsv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/records/v1alpha1"
-	simplejsonappv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/v1alpha1"
+	recordsv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
+	simplejsonappv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
 )
 
 func init() {

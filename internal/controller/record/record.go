@@ -32,9 +32,9 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 
-	"github.com/crossplane/provider-simplejsonapp/apis/records/v1alpha1"
-	apisv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/v1alpha1"
-	"github.com/crossplane/provider-simplejsonapp/internal/features"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
+	apisv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/features"
 )
 
 const (
