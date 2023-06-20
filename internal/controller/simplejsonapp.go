@@ -21,7 +21,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	"github.com/crossplane/provider-simplejsonapp/internal/controller/config"
-	"github.com/crossplane/provider-simplejsonapp/internal/controller/mytype"
+	"github.com/crossplane/provider-simplejsonapp/internal/controller/record"
 )
 
 // Setup creates all SimpleJsonApp controllers with the supplied logger and adds them to
@@ -29,7 +29,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		config.Setup,
-		mytype.Setup,
+		record.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err

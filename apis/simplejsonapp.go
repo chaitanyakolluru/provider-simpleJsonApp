@@ -20,7 +20,7 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	samplev1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/sample/v1alpha1"
+	recordsv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/records/v1alpha1"
 	simplejsonappv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/v1alpha1"
 )
 
@@ -28,7 +28,7 @@ func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes,
 		simplejsonappv1alpha1.SchemeBuilder.AddToScheme,
-		samplev1alpha1.SchemeBuilder.AddToScheme,
+		recordsv1alpha1.SchemeBuilder.AddToScheme,
 	)
 }
 
