@@ -44,3 +44,14 @@ func (s *SjaClient) GetRecord(name string) (v1alpha1.RecordParameters, error) {
 
 	return response, nil
 }
+
+func (s *SjaClient) PostRecord(record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
+	var response v1alpha1.RecordParameters
+
+	err := requests.URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).BodyJSON(&record).ToJSON(&response).Fetch(s.ctx)
+	if err != nil {
+		return v1alpha1.RecordParameters{}, errors.New(errGetError)
+	}
+
+	return response, nil
+}
