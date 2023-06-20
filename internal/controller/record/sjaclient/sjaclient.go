@@ -2,6 +2,7 @@ package sjaclient
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 
@@ -25,7 +26,7 @@ func CreatSjaClient(ctx context.Context) *SjaClient {
 func (s *SjaClient) GetRecords() ([]v1alpha1.RecordParameters, error) {
 	var response []v1alpha1.RecordParameters
 
-	err := requests.URL(SIMPLE_JSON_APP_BASEURL + "/records").ToJSON(&response).Fetch(s.ctx)
+	err := requests.URL(fmt.Sprintf("%s/records", SIMPLE_JSON_APP_BASEURL)).ToJSON(&response).Fetch(s.ctx)
 	if err != nil {
 		return []v1alpha1.RecordParameters{}, errors.New(errGetError)
 	}
