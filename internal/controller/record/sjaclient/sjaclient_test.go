@@ -42,3 +42,20 @@ func TestPostRecord(t *testing.T) {
 	}
 	fmt.Println(got)
 }
+
+func TestPutRecord(t *testing.T) {
+	sjaclient := CreatSjaClient(context.Background())
+	request := v1alpha1.RecordParameters{
+		Id:          2,
+		Name:        "chai2",
+		Age:         11,
+		Designation: "happiness",
+		Location:    "happiness",
+		Todos:       []string{"gg"},
+	}
+	got, err := sjaclient.PutRecord(request)
+	if err != nil {
+		t.Errorf("GetRecord() failed with %s", err.Error())
+	}
+	fmt.Println(got)
+}
