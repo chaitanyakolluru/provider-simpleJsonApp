@@ -25,7 +25,6 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	simpleJsonAppCrud "github.com/chaitanyakolluru/go-works/simpleJsonApp/pkg/crud"
 	"github.com/crossplane/crossplane-runtime/pkg/connection"
 	"github.com/crossplane/crossplane-runtime/pkg/controller"
 	"github.com/crossplane/crossplane-runtime/pkg/event"
@@ -50,11 +49,9 @@ const (
 // A NoOpService does nothing.
 type NoOpService struct{}
 
-// var (
-// 	newNoOpService = func(_ []byte) (interface{}, error) { return &NoOpService{}, nil } // this thing needs to take in data from providerconfig creds and return a pointer to a simplejsonapp app client
-// )
-
-var newNoOpService = func(_ []byte) (*simpleJsonAppCrud.Client, error) { return simpleJsonAppCrud.Createlient(), nil }
+var (
+	newNoOpService = func(_ []byte) (interface{}, error) { return &NoOpService{}, nil }
+)
 
 // Setup adds a controller that reconciles Record managed resources.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
@@ -89,7 +86,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 type connector struct {
 	kube         client.Client
 	usage        resource.Tracker
-	newServiceFn func(_ []byte) (*simpleJsonAppCrud.Client, error)
+	newServiceFn func(creds []byte) (interface{}, error)
 }
 
 // Connect typically produces an ExternalClient by:
@@ -118,7 +115,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 		return nil, errors.Wrap(err, errGetCreds)
 	}
 
-	svc, err := c.newServiceFn(data) // svc is the client
+	svc, err := c.newServiceFn(data)
 	if err != nil {
 		return nil, errors.Wrap(err, errNewClient)
 	}
@@ -131,7 +128,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 type external struct {
 	// A 'client' used to connect to the external resource API. In practice this
 	// would be something like an AWS SDK client.
-	service interface{} // this would be something like e.client.CreateRecord for me.
+	service interface{}
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
