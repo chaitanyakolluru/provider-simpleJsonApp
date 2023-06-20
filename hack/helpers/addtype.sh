@@ -20,6 +20,7 @@ set -euo pipefail
 
 APIVERSION="${APIVERSION:-v1alpha1}"
 echo "Adding type ${KIND} to group ${GROUP} with version ${APIVERSION}"
+GOMPLATE="./tools/gomplate-v3.11.5"
 
 export GROUP
 export KIND
