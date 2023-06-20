@@ -27,7 +27,12 @@ import (
 
 // RecordParameters are the configurable fields of a Record.
 type RecordParameters struct {
-	ConfigurableField string `json:"configurableField"`
+	Id          int      `json:"id"`
+	Name        string   `json:"name"`
+	Age         int      `json:"age"`
+	Designation string   `json:"designation"`
+	Location    string   `json:"location"`
+	Todos       []string `json:"todos"`
 }
 
 // RecordObservation are the observable fields of a Record.
