@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
-  name: storeconfigs.simplejsonapp.crossplane.io
+  name: storeconfigs.template.crossplane.io
 spec:
-  group: simplejsonapp.crossplane.io
+  group: template.crossplane.io
   names:
     categories:
     - crossplane

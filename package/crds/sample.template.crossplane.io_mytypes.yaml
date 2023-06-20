@@ -5,14 +5,14 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
-  name: mytypes.sample.simplejsonapp.crossplane.io
+  name: mytypes.sample.template.crossplane.io
 spec:
-  group: sample.simplejsonapp.crossplane.io
+  group: sample.template.crossplane.io
   names:
     categories:
     - crossplane
     - managed
-    - simplejsonapp
+    - template
     kind: MyType
     listKind: MyTypeList
     plural: mytypes
