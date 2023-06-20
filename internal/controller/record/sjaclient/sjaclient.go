@@ -33,3 +33,14 @@ func (s *SjaClient) GetRecords() ([]v1alpha1.RecordParameters, error) {
 
 	return response, nil
 }
+
+func (s *SjaClient) GetRecord(name string) (v1alpha1.RecordParameters, error) {
+	var response v1alpha1.RecordParameters
+
+	err := requests.URL(fmt.Sprintf("%s/records/%s", SIMPLE_JSON_APP_BASEURL, name)).ToJSON(&response).Fetch(s.ctx)
+	if err != nil {
+		return v1alpha1.RecordParameters{}, errors.New(errGetError)
+	}
+
+	return response, nil
+}

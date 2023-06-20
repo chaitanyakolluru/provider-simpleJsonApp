@@ -13,5 +13,13 @@ func TestGetRecords(t *testing.T) {
 		t.Errorf("GetRecords() failed with %s", err.Error())
 	}
 	fmt.Println(got)
+}
 
+func TestGetRecord(t *testing.T) {
+	sjaclient := CreatSjaClient(context.Background())
+	got, err := sjaclient.GetRecord("chai")
+	if err != nil {
+		t.Errorf("GetRecord() failed with %s", err.Error())
+	}
+	fmt.Println(got)
 }
