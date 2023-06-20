@@ -5,18 +5,18 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.11.3
   creationTimestamp: null
-  name: mytypes.sample.simplejsonapp.crossplane.io
+  name: records.records.simplejsonapp.crossplane.io
 spec:
-  group: sample.simplejsonapp.crossplane.io
+  group: records.simplejsonapp.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - simplejsonapp
-    kind: MyType
-    listKind: MyTypeList
-    plural: mytypes
-    singular: mytype
+    kind: Record
+    listKind: RecordList
+    plural: records
+    singular: record
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -35,7 +35,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: A MyType is an example API type.
+        description: A Record is an example API type.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -50,7 +50,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: A MyTypeSpec defines the desired state of a MyType.
+            description: A RecordSpec defines the desired state of a Record.
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,7 +66,7 @@ spec:
                 - Delete
                 type: string
               forProvider:
-                description: MyTypeParameters are the configurable fields of a MyType.
+                description: RecordParameters are the configurable fields of a Record.
                 properties:
                   configurableField:
                     type: string
@@ -260,17 +260,13 @@ spec:
             - forProvider
             type: object
           status:
-            description: A MyTypeStatus represents the observed state of a MyType.
+            description: A RecordStatus represents the observed state of a Record.
             properties:
               atProvider:
-                description: MyTypeObservation are the observable fields of a MyType.
+                description: RecordObservation are the observable fields of a Record.
                 properties:
-                  configurableField:
-                    type: string
                   observableField:
                     type: string
-                required:
-                - configurableField
                 type: object
               conditions:
                 description: Conditions of the resource.

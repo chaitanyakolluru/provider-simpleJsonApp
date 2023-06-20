@@ -34,7 +34,7 @@ import (
 
 	"github.com/crossplane/provider-simplejsonapp/apis/records/v1alpha1"
 	apisv1alpha1 "github.com/crossplane/provider-simplejsonapp/apis/v1alpha1"
-	"github.com/crossplane/provider-simplejsonapp/internal/controller/features"
+	"github.com/crossplane/provider-simplejsonapp/internal/features"
 )
 
 const (
