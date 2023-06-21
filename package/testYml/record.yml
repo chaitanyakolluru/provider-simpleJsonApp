@@ -7,8 +7,9 @@ spec:
   forProvider:
     name: "chaitanya"
     age: 22
-    id: 1
-    location: "soemthing"
+    location: "something"
+    designation: "something"
     todos:
-      - "see if running in kind woks"
+      - see if running in kind woks
       - set it up with local k8s
+      - causing an update

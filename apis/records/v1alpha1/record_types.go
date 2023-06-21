@@ -27,7 +27,6 @@ import (
 
 // RecordParameters are the configurable fields of a Record.
 type RecordParameters struct {
-	Id          int      `json:"id"`
 	Name        string   `json:"name"`
 	Age         int      `json:"age"`
 	Designation string   `json:"designation"`

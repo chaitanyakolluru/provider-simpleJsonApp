@@ -73,8 +73,6 @@ spec:
                   properties:
                     name:
                       type: string
-                    id:
-                      type: integer
                     age:
                       type: integer
                     designation:

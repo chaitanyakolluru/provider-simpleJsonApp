@@ -102,7 +102,6 @@ func runTestCases(t *testing.T, cases caseStructure) {
 func TestObserveNoChange(t *testing.T) {
 
 	cases := setupTestCase("returns as object exists and upto date", "doesn't exist", true, true, v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "chai3",
 		Age:         11,
 		Designation: "happiness",
@@ -117,7 +116,6 @@ func TestObserveNoChange(t *testing.T) {
 func TestObserveDoesntExist(t *testing.T) {
 
 	cases := setupTestCase("returns as object doesn't exist", "doesn't exist", false, false, v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "RECORD DOESN'T EXIST",
 		Age:         11,
 		Designation: "happiness CHANGED",
@@ -131,7 +129,6 @@ func TestObserveDoesntExist(t *testing.T) {
 func TestObserveExistAndNotUpToDate(t *testing.T) {
 
 	cases := setupTestCase("returns as object exist but not upto date", "not upto date", true, false, v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "chai3",
 		Age:         11,
 		Designation: "happiness CHANGED",

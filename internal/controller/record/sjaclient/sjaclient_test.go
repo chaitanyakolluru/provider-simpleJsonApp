@@ -29,7 +29,6 @@ func TestGetRecord(t *testing.T) {
 func TestPostRecord(t *testing.T) {
 	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "chai2",
 		Age:         11,
 		Designation: "happiness",
@@ -46,7 +45,6 @@ func TestPostRecord(t *testing.T) {
 func TestPutRecord(t *testing.T) {
 	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "chai2",
 		Age:         11,
 		Designation: "happiness",
@@ -63,7 +61,6 @@ func TestPutRecord(t *testing.T) {
 func TestDeleteRecord(t *testing.T) {
 	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
-		Id:          2,
 		Name:        "chai2",
 		Age:         11,
 		Designation: "happiness",
