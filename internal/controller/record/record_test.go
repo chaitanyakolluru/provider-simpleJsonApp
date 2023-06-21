@@ -57,17 +57,10 @@ type caseStructure map[string]struct {
 	want   want
 }
 
-var setupArgs = func() args {
+var setupArgs = func(testRecord v1alpha1.RecordParameters) args {
 	return args{
 		ctx: context.Background(),
-		mg: &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: v1alpha1.RecordParameters{
-			Id:          2,
-			Name:        "chai2",
-			Age:         11,
-			Designation: "happiness",
-			Location:    "happiness",
-			Todos:       []string{"gg"},
-		}}}}
+		mg:  &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: testRecord}}}
 }
 
 var setupWant = func(resourceExists, resouceUpToDate bool) want {
@@ -80,20 +73,17 @@ var setupWant = func(resourceExists, resouceUpToDate bool) want {
 		err: nil}
 }
 
-var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool) caseStructure {
+var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool, testRecord v1alpha1.RecordParameters) caseStructure {
 	return caseStructure{name: {
 		reason: reason,
 		fields: fields{service: sjaclient.CreateSjaClient()},
-		args:   setupArgs(),
+		args:   setupArgs(testRecord),
 		want:   setupWant(resourceExists, resouceUpToDate),
 	},
 	}
 }
 
-func TestObserveSuccess(t *testing.T) {
-
-	cases := setupTestCase("returns as object exists and upto date", "doesn't exist", true, true)
-
+func runTestCases(t *testing.T, cases caseStructure) {
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
 			e := external{service: tc.fields.service}
@@ -106,4 +96,33 @@ func TestObserveSuccess(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestObserveNoChange(t *testing.T) {
+
+	cases := setupTestCase("returns as object exists and upto date", "doesn't exist", true, true, v1alpha1.RecordParameters{
+		Id:          2,
+		Name:        "chai2",
+		Age:         11,
+		Designation: "happiness",
+		Location:    "happiness",
+		Todos:       []string{"gg"},
+	})
+
+	runTestCases(t, cases)
+
+}
+
+func TestObserveDoesntExist(t *testing.T) {
+
+	cases := setupTestCase("returns as object doesn't exist", "doesn't exist", false, false, v1alpha1.RecordParameters{
+		Id:          2,
+		Name:        "RECORD DOESN'T EXIST",
+		Age:         11,
+		Designation: "happiness CHANGED",
+		Location:    "happiness",
+		Todos:       []string{"gg"},
+	})
+
+	runTestCases(t, cases)
 }
