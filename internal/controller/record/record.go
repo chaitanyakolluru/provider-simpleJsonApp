@@ -134,9 +134,6 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		return managed.ExternalObservation{}, errors.New(errNotRecord)
 	}
 
-	// These fmt statements should be removed in the real implementation.
-	fmt.Printf("Observing: %+v", cr)
-
 	// as yet, it doesn't distinguish between error with reqiest vs object not being present.
 	// todo
 	sjaResource, err := c.service.GetRecord(ctx, cr.Spec.ForProvider.Name)

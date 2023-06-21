@@ -20,12 +20,12 @@ import (
 	"context"
 	"testing"
 
+	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
 	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	"github.com/crossplane/crossplane-runtime/pkg/test"
+	"github.com/google/go-cmp/cmp"
 )
 
 // Unlike many Kubernetes projects Crossplane does not use third party testing
@@ -51,13 +51,40 @@ func TestObserve(t *testing.T) {
 		err error
 	}
 
+	var setupArgs = func() args {
+		return args{
+			ctx: context.Background(),
+			mg: &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: v1alpha1.RecordParameters{
+				Id:          2,
+				Name:        "chai2",
+				Age:         11,
+				Designation: "happiness",
+				Location:    "happiness",
+				Todos:       []string{"gg"},
+			}}}}
+	}
+
+	var setupWant = func(resourceExists, resouceUpToDate bool) want {
+		return want{
+			o: managed.ExternalObservation{
+				ResourceExists:    resourceExists,
+				ResourceUpToDate:  resouceUpToDate,
+				ConnectionDetails: managed.ConnectionDetails{},
+			},
+			err: nil}
+	}
+
 	cases := map[string]struct {
 		reason string
 		fields fields
 		args   args
 		want   want
-	}{
-		// TODO: Add test cases.
+	}{"returns as object exists and is upto date": {
+		reason: "doesn't match",
+		fields: fields{service: sjaclient.CreateSjaClient()},
+		args:   setupArgs(),
+		want:   setupWant(true, true),
+	},
 	}
 
 	for name, tc := range cases {
