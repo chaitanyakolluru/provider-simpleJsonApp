@@ -37,12 +37,15 @@ import (
 )
 
 const (
-	errNotRecord    = "managed resource is not a Record custom resource"
-	errTrackPCUsage = "cannot track ProviderConfig usage"
-	errGetPC        = "cannot get ProviderConfig"
-	errGetCreds     = "cannot get credentials"
-
-	errNewClient = "cannot create new Service"
+	errNotRecord        = "managed resource is not a Record custom resource"
+	errTrackPCUsage     = "cannot track ProviderConfig usage"
+	errGetPC            = "cannot get ProviderConfig"
+	errGetCreds         = "cannot get credentials"
+	errCantGet          = "cannot get resource"
+	errNewClient        = "cannot create new Service"
+	errCmpRecord        = "cannot compare managed resource spec with external resource"
+	errCantCreateRecord = "cannot create record"
+	errCantUpdateRecord = "cannot update record"
 )
 
 var (
@@ -141,7 +144,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 			ResourceExists:    false,
 			ResourceUpToDate:  false,
 			ConnectionDetails: managed.ConnectionDetails{},
-		}, nil
+		}, errors.Wrap(err, errCantGet)
 	}
 
 	if diff := cmp.Diff(sjaResource, cr.Spec.ForProvider); diff != "" {
@@ -149,7 +152,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 			ResourceExists:    true,
 			ResourceUpToDate:  false,
 			ConnectionDetails: managed.ConnectionDetails{},
-		}, nil
+		}, errors.Wrap(err, errCmpRecord)
 	}
 
 	return managed.ExternalObservation{
@@ -167,7 +170,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 
 	_, err := c.service.PostRecord(ctx, cr.Spec.ForProvider)
 	if err != nil {
-		return managed.ExternalCreation{}, errors.New(err.Error())
+		return managed.ExternalCreation{}, errors.Wrap(err, errCantCreateRecord)
 	}
 
 	return managed.ExternalCreation{
@@ -185,7 +188,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 
 	_, err := c.service.PutRecord(ctx, cr.Spec.ForProvider)
 	if err != nil {
-		return managed.ExternalUpdate{}, errors.New(err.Error())
+		return managed.ExternalUpdate{}, errors.Wrap(err, errCantUpdateRecord)
 	}
 
 	return managed.ExternalUpdate{
