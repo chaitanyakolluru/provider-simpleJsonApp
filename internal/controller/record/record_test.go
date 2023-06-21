@@ -36,63 +36,61 @@ import (
 // https://github.com/golang/go/wiki/TestComments
 // https://github.com/crossplane/crossplane/blob/master/CONTRIBUTING.md#contributing-code
 
-func TestObserve(t *testing.T) {
-	type fields struct {
-		service *sjaclient.SjaClient
-	}
+type fields struct {
+	service *sjaclient.SjaClient
+}
 
-	type args struct {
-		ctx context.Context
-		mg  resource.Managed
-	}
+type args struct {
+	ctx context.Context
+	mg  resource.Managed
+}
 
-	type want struct {
-		o   managed.ExternalObservation
-		err error
-	}
+type want struct {
+	o   managed.ExternalObservation
+	err error
+}
 
-	var setupArgs = func() args {
-		return args{
-			ctx: context.Background(),
-			mg: &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: v1alpha1.RecordParameters{
-				Id:          2,
-				Name:        "chai2",
-				Age:         11,
-				Designation: "happiness",
-				Location:    "happiness",
-				Todos:       []string{"gg"},
-			}}}}
-	}
+type caseStructure map[string]struct {
+	reason string
+	fields fields
+	args   args
+	want   want
+}
 
-	var setupWant = func(resourceExists, resouceUpToDate bool) want {
-		return want{
-			o: managed.ExternalObservation{
-				ResourceExists:    resourceExists,
-				ResourceUpToDate:  resouceUpToDate,
-				ConnectionDetails: managed.ConnectionDetails{},
-			},
-			err: nil}
-	}
+var setupArgs = func() args {
+	return args{
+		ctx: context.Background(),
+		mg: &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: v1alpha1.RecordParameters{
+			Id:          2,
+			Name:        "chai2",
+			Age:         11,
+			Designation: "happiness",
+			Location:    "happiness",
+			Todos:       []string{"gg"},
+		}}}}
+}
 
-	var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool) map[string]struct {
-		reason string
-		fields fields
-		args   args
-		want   want
-	} {
-		return map[string]struct {
-			reason string
-			fields fields
-			args   args
-			want   want
-		}{name: {
-			reason: reason,
-			fields: fields{service: sjaclient.CreateSjaClient()},
-			args:   setupArgs(),
-			want:   setupWant(resourceExists, resouceUpToDate),
+var setupWant = func(resourceExists, resouceUpToDate bool) want {
+	return want{
+		o: managed.ExternalObservation{
+			ResourceExists:    resourceExists,
+			ResourceUpToDate:  resouceUpToDate,
+			ConnectionDetails: managed.ConnectionDetails{},
 		},
-		}
+		err: nil}
+}
+
+var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool) caseStructure {
+	return caseStructure{name: {
+		reason: reason,
+		fields: fields{service: sjaclient.CreateSjaClient()},
+		args:   setupArgs(),
+		want:   setupWant(resourceExists, resouceUpToDate),
+	},
 	}
+}
+
+func TestObserveSuccess(t *testing.T) {
 
 	cases := setupTestCase("returns as object exists and upto date", "doesn't exist", true, true)
 
