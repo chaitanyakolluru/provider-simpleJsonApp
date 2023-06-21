@@ -38,7 +38,7 @@ func TestPostRecord(t *testing.T) {
 	}
 	got, err := sjaclient.PostRecord(context.Background(), request)
 	if err != nil {
-		t.Errorf("GetRecord() failed with %s", err.Error())
+		t.Errorf("PostRecord() failed with %s", err.Error())
 	}
 	fmt.Println(got)
 }
@@ -55,7 +55,7 @@ func TestPutRecord(t *testing.T) {
 	}
 	got, err := sjaclient.PutRecord(context.Background(), request)
 	if err != nil {
-		t.Errorf("GetRecord() failed with %s", err.Error())
+		t.Errorf("PutRecord() failed with %s", err.Error())
 	}
 	fmt.Println(got)
 }

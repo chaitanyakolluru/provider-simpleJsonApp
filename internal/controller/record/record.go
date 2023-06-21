@@ -18,7 +18,6 @@ package record
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
 	apisv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
@@ -166,7 +165,10 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalCreation{}, errors.New(errNotRecord)
 	}
 
-	fmt.Printf("Creating: %+v", cr)
+	_, err := c.service.PostRecord(ctx, cr.Spec.ForProvider)
+	if err != nil {
+		return managed.ExternalCreation{}, errors.New(err.Error())
+	}
 
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -181,7 +183,10 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalUpdate{}, errors.New(errNotRecord)
 	}
 
-	fmt.Printf("Updating: %+v", cr)
+	_, err := c.service.PutRecord(ctx, cr.Spec.ForProvider)
+	if err != nil {
+		return managed.ExternalUpdate{}, errors.New(err.Error())
+	}
 
 	return managed.ExternalUpdate{
 		// Optionally return any details that may be required to connect to the
@@ -196,7 +201,6 @@ func (c *external) Delete(ctx context.Context, mg resource.Managed) error {
 		return errors.New(errNotRecord)
 	}
 
-	fmt.Printf("Deleting: %+v", cr)
-
-	return nil
+	_, err := c.service.DeleteRecord(ctx, cr.Spec.ForProvider)
+	return err
 }
