@@ -1,0 +1,14 @@
+apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
+kind: Record
+metadata:
+  name: example-record
+  namespace: default
+spec:
+  forProvider:
+    name: "chaitanya"
+    age: 22
+    id: 1
+    location: "soemthing"
+    todos:
+      - "see if running in kind woks"
+      - set it up with local k8s

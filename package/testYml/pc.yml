@@ -1,0 +1,8 @@
+apiVersion: simplejsonapp.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: default
+  namespace: default
+spec:
+  credentials:
+    source: None
