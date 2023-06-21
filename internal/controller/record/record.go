@@ -34,6 +34,7 @@ import (
 
 	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
 	apisv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
+	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
 	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/features"
 )
 
@@ -46,11 +47,8 @@ const (
 	errNewClient = "cannot create new Service"
 )
 
-// A NoOpService does nothing.
-type NoOpService struct{}
-
 var (
-	newNoOpService = func(_ []byte) (interface{}, error) { return &NoOpService{}, nil }
+	sjaService = func(_ []byte) (*sjaclient.SjaClient, error) { return sjaclient.CreateSjaClient(), nil }
 )
 
 // Setup adds a controller that reconciles Record managed resources.
@@ -67,7 +65,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		managed.WithExternalConnecter(&connector{
 			kube:         mgr.GetClient(),
 			usage:        resource.NewProviderConfigUsageTracker(mgr.GetClient(), &apisv1alpha1.ProviderConfigUsage{}),
-			newServiceFn: newNoOpService}),
+			newServiceFn: sjaService}),
 		managed.WithLogger(o.Logger.WithValues("controller", name)),
 		managed.WithPollInterval(o.PollInterval),
 		managed.WithRecorder(event.NewAPIRecorder(mgr.GetEventRecorderFor(name))),
@@ -86,7 +84,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 type connector struct {
 	kube         client.Client
 	usage        resource.Tracker
-	newServiceFn func(creds []byte) (interface{}, error)
+	newServiceFn func(creds []byte) (*sjaclient.SjaClient, error)
 }
 
 // Connect typically produces an ExternalClient by:
@@ -128,7 +126,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 type external struct {
 	// A 'client' used to connect to the external resource API. In practice this
 	// would be something like an AWS SDK client.
-	service interface{}
+	service *sjaclient.SjaClient
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {

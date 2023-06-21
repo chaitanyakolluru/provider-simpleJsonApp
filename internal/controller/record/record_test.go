@@ -20,6 +20,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
@@ -37,7 +38,7 @@ import (
 
 func TestObserve(t *testing.T) {
 	type fields struct {
-		service interface{}
+		service *sjaclient.SjaClient
 	}
 
 	type args struct {

@@ -9,8 +9,8 @@ import (
 )
 
 func TestGetRecords(t *testing.T) {
-	sjaclient := CreatSjaClient(context.Background())
-	got, err := sjaclient.GetRecords()
+	sjaclient := CreateSjaClient()
+	got, err := sjaclient.GetRecords(context.Background())
 	if err != nil {
 		t.Errorf("GetRecords() failed with %s", err.Error())
 	}
@@ -18,8 +18,8 @@ func TestGetRecords(t *testing.T) {
 }
 
 func TestGetRecord(t *testing.T) {
-	sjaclient := CreatSjaClient(context.Background())
-	got, err := sjaclient.GetRecord("chai")
+	sjaclient := CreateSjaClient()
+	got, err := sjaclient.GetRecord(context.Background(), "chai")
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
@@ -27,7 +27,7 @@ func TestGetRecord(t *testing.T) {
 }
 
 func TestPostRecord(t *testing.T) {
-	sjaclient := CreatSjaClient(context.Background())
+	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
 		Id:          2,
 		Name:        "chai2",
@@ -36,7 +36,7 @@ func TestPostRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.PostRecord(request)
+	got, err := sjaclient.PostRecord(context.Background(), request)
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
@@ -44,7 +44,7 @@ func TestPostRecord(t *testing.T) {
 }
 
 func TestPutRecord(t *testing.T) {
-	sjaclient := CreatSjaClient(context.Background())
+	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
 		Id:          2,
 		Name:        "chai2",
@@ -53,7 +53,7 @@ func TestPutRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.PutRecord(request)
+	got, err := sjaclient.PutRecord(context.Background(), request)
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
@@ -61,7 +61,7 @@ func TestPutRecord(t *testing.T) {
 }
 
 func TestDeleteRecord(t *testing.T) {
-	sjaclient := CreatSjaClient(context.Background())
+	sjaclient := CreateSjaClient()
 	request := v1alpha1.RecordParameters{
 		Id:          2,
 		Name:        "chai2",
@@ -70,7 +70,7 @@ func TestDeleteRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.DeleteRecord(request)
+	got, err := sjaclient.DeleteRecord(context.Background(), request)
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
