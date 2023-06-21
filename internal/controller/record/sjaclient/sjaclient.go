@@ -66,3 +66,14 @@ func (s *SjaClient) PutRecord(record v1alpha1.RecordParameters) (v1alpha1.Record
 
 	return response, nil
 }
+
+func (s *SjaClient) DeleteRecord(record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
+	var response v1alpha1.RecordParameters
+
+	err := requests.URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).Delete().BodyJSON(&record).ToJSON(&response).Fetch(s.ctx)
+	if err != nil {
+		return v1alpha1.RecordParameters{}, errors.New(errGetError)
+	}
+
+	return response, nil
+}
