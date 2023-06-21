@@ -40,8 +40,9 @@ func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record
 	var response v1alpha1.RecordParameters
 
 	err := requests.URL(fmt.Sprintf("%s/records/%s", SIMPLE_JSON_APP_BASEURL, name)).ToJSON(&response).Fetch(ctx)
+
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errGetRecord)
+		return v1alpha1.RecordParameters{}, nil
 	}
 
 	return response, nil

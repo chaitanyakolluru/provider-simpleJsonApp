@@ -43,7 +43,6 @@ const (
 	errGetCreds         = "cannot get credentials"
 	errCantGet          = "cannot get resource"
 	errNewClient        = "cannot create new Service"
-	errCmpRecord        = "cannot compare managed resource spec with external resource"
 	errCantCreateRecord = "cannot create record"
 	errCantUpdateRecord = "cannot update record"
 )
@@ -147,12 +146,20 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		}, errors.Wrap(err, errCantGet)
 	}
 
+	if sjaResource.Name != cr.Spec.ForProvider.Name {
+		return managed.ExternalObservation{
+			ResourceExists:    false,
+			ResourceUpToDate:  false,
+			ConnectionDetails: managed.ConnectionDetails{},
+		}, nil
+	}
+
 	if diff := cmp.Diff(sjaResource, cr.Spec.ForProvider); diff != "" {
 		return managed.ExternalObservation{
 			ResourceExists:    true,
 			ResourceUpToDate:  false,
 			ConnectionDetails: managed.ConnectionDetails{},
-		}, errors.Wrap(err, errCmpRecord)
+		}, nil
 	}
 
 	return managed.ExternalObservation{
