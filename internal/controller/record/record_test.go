@@ -126,3 +126,17 @@ func TestObserveDoesntExist(t *testing.T) {
 
 	runTestCases(t, cases)
 }
+
+func TestObserveExistAndNotUpToDate(t *testing.T) {
+
+	cases := setupTestCase("returns as object exist but not upto date", "not upto date", true, false, v1alpha1.RecordParameters{
+		Id:          2,
+		Name:        "chai2",
+		Age:         11,
+		Designation: "happiness CHANGED",
+		Location:    "happiness",
+		Todos:       []string{"gg"},
+	})
+
+	runTestCases(t, cases)
+}
