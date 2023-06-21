@@ -74,18 +74,27 @@ func TestObserve(t *testing.T) {
 			err: nil}
 	}
 
-	cases := map[string]struct {
+	var setupTestCase = func() map[string]struct {
 		reason string
 		fields fields
 		args   args
 		want   want
-	}{"returns as object exists and is upto date": {
-		reason: "doesn't match",
-		fields: fields{service: sjaclient.CreateSjaClient()},
-		args:   setupArgs(),
-		want:   setupWant(true, true),
-	},
+	} {
+		return map[string]struct {
+			reason string
+			fields fields
+			args   args
+			want   want
+		}{"returns as object exists and is upto date": {
+			reason: "doesn't match",
+			fields: fields{service: sjaclient.CreateSjaClient()},
+			args:   setupArgs(),
+			want:   setupWant(true, true),
+		},
+		}
 	}
+
+	cases := setupTestCase()
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
