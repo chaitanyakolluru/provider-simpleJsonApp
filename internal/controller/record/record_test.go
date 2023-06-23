@@ -76,7 +76,7 @@ var setupWant = func(resourceExists, resouceUpToDate bool) want {
 var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool, testRecord v1alpha1.RecordParameters) caseStructure {
 	return caseStructure{name: {
 		reason: reason,
-		fields: fields{service: sjaclient.CreateSjaClient()},
+		fields: fields{service: sjaclient.CreateSjaClient("token")},
 		args:   setupArgs(testRecord),
 		want:   setupWant(resourceExists, resouceUpToDate),
 	},

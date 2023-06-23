@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetRecords(t *testing.T) {
-	sjaclient := CreateSjaClient()
+	sjaclient := CreateSjaClient("token")
 	got, err := sjaclient.GetRecords(context.Background())
 	if err != nil {
 		t.Errorf("GetRecords() failed with %s", err.Error())
@@ -18,7 +18,7 @@ func TestGetRecords(t *testing.T) {
 }
 
 func TestGetRecord(t *testing.T) {
-	sjaclient := CreateSjaClient()
+	sjaclient := CreateSjaClient("token")
 	got, err := sjaclient.GetRecord(context.Background(), "chai")
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
@@ -27,7 +27,7 @@ func TestGetRecord(t *testing.T) {
 }
 
 func TestPostRecord(t *testing.T) {
-	sjaclient := CreateSjaClient()
+	sjaclient := CreateSjaClient("token")
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,
@@ -43,7 +43,7 @@ func TestPostRecord(t *testing.T) {
 }
 
 func TestPutRecord(t *testing.T) {
-	sjaclient := CreateSjaClient()
+	sjaclient := CreateSjaClient("token")
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,
@@ -59,7 +59,7 @@ func TestPutRecord(t *testing.T) {
 }
 
 func TestDeleteRecord(t *testing.T) {
-	sjaclient := CreateSjaClient()
+	sjaclient := CreateSjaClient("token")
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,

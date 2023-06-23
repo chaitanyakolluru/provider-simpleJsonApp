@@ -48,7 +48,7 @@ const (
 )
 
 var (
-	sjaService = func(_ []byte) (*sjaclient.SjaClient, error) { return sjaclient.CreateSjaClient(), nil }
+	sjaService = func(data []byte) (*sjaclient.SjaClient, error) { return sjaclient.CreateSjaClient(string(data)), nil }
 )
 
 // Setup adds a controller that reconciles Record managed resources.

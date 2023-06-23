@@ -19,16 +19,20 @@ const (
 	errDeleteRecord = "delete /record error"
 )
 
-type SjaClient struct{}
+type SjaClient struct{ token string }
 
-func CreateSjaClient() *SjaClient {
-	return &SjaClient{}
+func CreateSjaClient(token string) *SjaClient {
+	return &SjaClient{token: token}
 }
 
 func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordParameters, error) {
 	var response []v1alpha1.RecordParameters
 
-	err := requests.URL(fmt.Sprintf("%s/records", SIMPLE_JSON_APP_BASEURL)).ToJSON(&response).Fetch(ctx)
+	err := requests.
+		URL(fmt.Sprintf("%s/records", SIMPLE_JSON_APP_BASEURL)).
+		Header("Authorization", fmt.Sprintf("Bearer %s", s.token)).
+		ToJSON(&response).
+		Fetch(ctx)
 	if err != nil {
 		return []v1alpha1.RecordParameters{}, errors.Wrap(err, errGetRecords)
 	}
@@ -39,7 +43,11 @@ func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordParameters
 func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.RecordParameters, error) {
 	var response v1alpha1.RecordParameters
 
-	err := requests.URL(fmt.Sprintf("%s/records/%s", SIMPLE_JSON_APP_BASEURL, name)).ToJSON(&response).Fetch(ctx)
+	err := requests.
+		URL(fmt.Sprintf("%s/records/%s", SIMPLE_JSON_APP_BASEURL, name)).
+		Header("Authorization", fmt.Sprintf("Bearer %s", s.token)).
+		ToJSON(&response).
+		Fetch(ctx)
 
 	if err != nil {
 		return v1alpha1.RecordParameters{}, nil
@@ -51,7 +59,12 @@ func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record
 func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
 	var response v1alpha1.RecordParameters
 
-	err := requests.URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).BodyJSON(&record).ToJSON(&response).Fetch(ctx)
+	err := requests.
+		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
+		Header("Authorization", fmt.Sprintf("Bearer %s", s.token)).
+		BodyJSON(&record).
+		ToJSON(&response).
+		Fetch(ctx)
 	if err != nil {
 		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPostRecord)
 	}
@@ -62,7 +75,13 @@ func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParame
 func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
 	var response v1alpha1.RecordParameters
 
-	err := requests.URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).Put().BodyJSON(&record).ToJSON(&response).Fetch(ctx)
+	err := requests.
+		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
+		Header("Authorization", fmt.Sprintf("Bearer %s", s.token)).
+		Put().
+		BodyJSON(&record).
+		ToJSON(&response).
+		Fetch(ctx)
 	if err != nil {
 		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPutRecord)
 	}
@@ -73,7 +92,13 @@ func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParamet
 func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
 	var response v1alpha1.RecordParameters
 
-	err := requests.URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).Delete().BodyJSON(&record).ToJSON(&response).Fetch(ctx)
+	err := requests.
+		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
+		Header("Authorization", fmt.Sprintf("Bearer %s", s.token)).
+		Delete().
+		BodyJSON(&record).
+		ToJSON(&response).
+		Fetch(ctx)
 	if err != nil {
 		return v1alpha1.RecordParameters{}, errors.Wrap(err, errDeleteRecord)
 	}
