@@ -5,10 +5,10 @@ metadata:
   namespace: default
 spec:
   forProvider:
-    name: "chaitanya"
+    name: chaitanyaSomething
     age: 22
-    location: "something"
-    designation: "something"
+    location: something
+    designation: something
     todos:
       - see if running in kind woks
       - set it up with local k8s
