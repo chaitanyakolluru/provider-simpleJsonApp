@@ -78,3 +78,40 @@ spec:
 ![record deletion](./images/record-delete.png)
 
 ![record deletion](./images/record-delete-on-simplejsonapp.png)
+
+### Provider Authentication:
+
+`providerconfig/default` is used to configure our `provider-simplejsonapp`. ProviderConfig has references to `secret/simplejsonapp` which contains the auth token used to authenticate to the api server `simpleJsonApp`.
+
+```
+➤ kc get secrets/simplejsonapp-secret
+NAME                   TYPE     DATA   AGE
+simplejsonapp-secret   Opaque   1      10m
+
+➤ kc get providerconfig/default
+NAME      AGE
+default   2d
+
+➤ kc get providerconfig/default -o yaml
+apiVersion: simplejsonapp.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"simplejsonapp.crossplane.io/v1alpha1","kind":"ProviderConfig","metadata":{"annotations":{},"name":"default"},"spec":{"credentials":{"secretRef":{"key":"token","name":"simplejsonapp-secret","namespace":"default"},"source":"Secret"}}}
+  creationTimestamp: "2023-06-21T03:11:29Z"
+  finalizers:
+  - in-use.crossplane.io
+  generation: 2
+  name: default
+  resourceVersion: "1103646"
+  uid: db8fd032-5a42-4e10-8813-bf85c5663294
+spec:
+  credentials:
+    secretRef:
+      key: token
+      name: simplejsonapp-secret
+      namespace: default
+    source: Secret
+status: {}
+```
