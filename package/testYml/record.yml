@@ -13,3 +13,4 @@ spec:
       - see if running in kind woks
       - set it up with local k8s
       - causing an update
+      - testing provider image setup
