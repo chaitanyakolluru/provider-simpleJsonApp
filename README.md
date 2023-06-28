@@ -2,13 +2,13 @@
 
 `provider-simplejsonapp` is a minimal [Crossplane](https://crossplane.io/) Provider,
 using which one can express external json records as a k8s `record` resource.
-This creates json records in an external application called [simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp). Below installation process helps with setting up the api server and Crossplane, along with this provider locally.
+This creates json records in an external application called [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp). Below installation process helps with setting up the api server and Crossplane, along with this provider locally.
 
 ## Installation
 
 ### Simple json app api server
 
-- Clone [simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp) locally and run
+- Clone [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) locally and run
 
 ```
 $ go run main.go
