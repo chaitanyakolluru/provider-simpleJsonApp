@@ -107,11 +107,11 @@ providers                                      pkg.crossplane.io/v1             
 storeconfigs                                   secrets.crossplane.io/v1alpha1                 false        StoreConfig
 ```
 
-Out of them, we will be setting up a `Composition` and a `Composite Resource Definition(XRD)` to setup a composite set of managed resources
-available to app teams as a `Composite Resource Claim`, created from a XRD. A `Claim` when applied against the k8s api creates a `Composite Reosource (XR)`, the details of which resource should make up the XR being declared with `Composition`.
+Out of them, we will be setting up a `Composition` and a `Composite Resource Definition(XRD)` to setup a composite set of managed resources. This will be made
+available to app teams as a `Composite Resource Claim`, created from a `XRD`. A `Claim` when applied against the k8s api creates a `Composite Reosource (XR)` and details on which resources make up the `XR` come from the `Composition`.
 
-So essentially, we create the blueprint for all the resources that compose up to make a `Composite Resource` using our `Composition`, and define a `XRD` which creates a `Claim`
-that can be used to create `XR` in an app namespace, and therefore all the resources composed by the XR.
+So essentially, we create the blueprint for all the resources that compose up to make a `Composite Resource(XR)` using our `Composition` and define a `XRD` which creates a `Claim`
+that can be used to create `XR` in an application namespace, and therefore all the resources composed by the `XR`.
 
 More details on the relationship of the resources and other terminology [here](https://docs.crossplane.io/latest/concepts/terminology/)
 
