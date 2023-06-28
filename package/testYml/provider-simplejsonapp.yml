@@ -5,7 +5,7 @@ kind: Provider
 metadata:
   name: provider-simplejsonapp
 spec:
-  package: chaitanyah368/provider-simplejsonapp:v1
+  package: chaitanyah368/provider-simplejsonapp:v2
 
 ---
 apiVersion: simplejsonapp.crossplane.io/v1alpha1
