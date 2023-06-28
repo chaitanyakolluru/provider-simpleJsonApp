@@ -87,3 +87,55 @@ record being created from simple json app's swagger page (external system)
 ![record deletion](./images/record-delete.png)
 
 ![record deletion](./images/record-delete-on-simplejsonapp.png)
+
+## Defining Compositions, Composite Resources, Composite Resource Deifnitions and Claims:
+
+With the previous steps, we have a `Managed Resource` that's now available to us as a resource from the k8s api, and we have
+some new resources available to us (from installing Crossplane):
+
+```
+compositeresourcedefinitions      xrd,xrds     apiextensions.crossplane.io/v1                 false        CompositeResourceDefinition
+compositionrevisions              comprev      apiextensions.crossplane.io/v1                 false        CompositionRevision
+compositions                      comp         apiextensions.crossplane.io/v1                 false        Composition
+environmentconfigs                envcfg       apiextensions.crossplane.io/v1alpha1           false        EnvironmentConfig
+configurationrevisions                         pkg.crossplane.io/v1                           false        ConfigurationRevision
+configurations                                 pkg.crossplane.io/v1                           false        Configuration
+controllerconfigs                              pkg.crossplane.io/v1alpha1                     false        ControllerConfig
+locks                                          pkg.crossplane.io/v1beta1                      false        Lock
+providerrevisions                              pkg.crossplane.io/v1                           false        ProviderRevision
+providers                                      pkg.crossplane.io/v1                           false        Provider
+storeconfigs                                   secrets.crossplane.io/v1alpha1                 false        StoreConfig
+```
+
+Out of them, we will be setting up a `Composition` and a `Composite Resource Definition(XRD)` to setup a composite set of managed resources
+available to app teams as a `Composite Resource Claim`, created from a XRD. A `Claim` when applied against the k8s api creates a `Composite Reosource (XR)`, the details of which resource should make up the XR being declared with `Composition`.
+
+So essentially, we create the blueprint for all the resources that compose up to make a `Composite Resource` using our `Composition`, and define a `XRD` which creates a `Claim`
+that can be used to create `XR` in an app namespace, and therefore all the resources composed by the XR.
+
+More details on the relationship of the resources and other terminology [here](https://docs.crossplane.io/latest/concepts/terminology/)
+
+### Install
+
+Install [provider-kubernetes](https://github.com/crossplane-contrib/provider-kubernetes) using below command
+
+```
+$ kubectl apply -f package/testYml/provider-kubernetes.yml
+```
+
+which creates k8s provider as seen below:
+
+```
+➤ kc get providers
+NAME                     INSTALLED   HEALTHY   PACKAGE                               AGE
+provider-simplejsonapp                         provider-simplejsonapp:v1             71m
+provider-kubernetes                            crossplane/provider-kubernetes:main   5s
+```
+
+### Apply Composition
+
+### Apply Composite Resource Definition
+
+### Apply Claim
+
+### Verify if XRs and its Managed Resources are created
