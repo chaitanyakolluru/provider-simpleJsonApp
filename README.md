@@ -41,7 +41,7 @@ to install dependencies and run the app locally on port 8081. Refer to it's READ
 - Next, with your kube context pointing to cluster, or where ever you wish to install Crossplane and the provider, run:
 
   ```
-  $ kubectl apply -f package/testYml/provider-simplejsonapp.yml
+  $ kubectl apply -f testYml/provider-simplejsonapp.yml
   ```
 
   which installs Provider `provider-simplejsonapp` and ProviderConfig `provider-simplejsonapp-config` (which references the secret we created in the previous step)
@@ -58,7 +58,7 @@ Run this command to create a record MR:
 
 ```
 
-$ kubctl apply -f package/testYml/record.yml
+$ kubctl apply -f testYml/record.yml
 
 ```
 
@@ -131,7 +131,7 @@ Install [provider-kubernetes](https://github.com/crossplane-contrib/provider-kub
 
 ```
 
-$ kubectl apply -f package/testYml/provider-kubernetes.yml
+$ kubectl apply -f testYml/provider-kubernetes.yml
 
 ```
 

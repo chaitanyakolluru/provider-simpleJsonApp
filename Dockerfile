@@ -5,6 +5,7 @@ RUN mkdir -p /build/provider-simpleJsonApp
 COPY cmd/ /build/provider-simpleJsonApp/cmd/
 COPY apis/ /build/provider-simpleJsonApp/apis/
 COPY internal/ /build/provider-simpleJsonApp/internal/
+COPY package/ /build/provider-simpleJsonApp/package/
 COPY go.* /build/provider-simpleJsonApp/
 
 WORKDIR /build/provider-simpleJsonApp
@@ -17,4 +18,4 @@ RUN apk update && apk add --no-cache openssl \
 
 COPY --from=golang /build/provider-simpleJsonApp/provider-simpleJsonApp /usr/local/bin/
 
-ENTRYPOINT [ "/bin/sh", "-c"]
+ENTRYPOINT [ "/bin/sh", "-c", "provider-simpleJsonApp"]
