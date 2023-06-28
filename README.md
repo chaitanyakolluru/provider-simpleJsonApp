@@ -1,117 +1,89 @@
 # provider-simplejsonapp
 
-`provider-simplejsonapp` is a minimal [Crossplane](https://crossplane.io/) Provider
-that is meant to be used as a simplejsonapp for implementing new Providers. It comes
-with the following features that are meant to be refactored:
+`provider-simplejsonapp` is a minimal [Crossplane](https://crossplane.io/) Provider,
+using which one can express external json records as a k8s `record` resource.
+This creates json records in an external application called [simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp). Below installation process helps with setting up the api server and Crossplane, along with this provider locally.
 
-- A `ProviderConfig` type that only points to a credentials `Secret`.
-- A `MyType` resource type that serves as an example managed resource.
-- A managed resource controller that reconciles `MyType` objects and simply
-  prints their configuration in its `Observe` method.
+## Installation
 
-## Developing
+### Simple json app api server
 
-1. Use this repository as a simplejsonapp to create a new one.
-1. Run `make submodules` to initialize the "build" Make submodule we use for CI/CD.
-1. Rename the provider by running the follwing command:
+- Clone [simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp) locally and run
 
 ```
-  make provider.prepare provider={PascalProviderName}
+$ go run main.go
 ```
 
-4. Add your new type by running the following command:
+to install dependencies and run the app locally on port 8081. Refer to it's README.md for more details on how to authenticate to the app and make requests to it.
 
-```
-make provider.addtype provider={PascalProviderName} group={group} kind={type}
-```
+### Provider
 
-5. Replace the _sample_ group with your new group in apis/{provider}.go
-6. Replace the _mytype_ type with your new type in internal/controller/{provider}.go
-7. Replace the default controller and ProviderConfig implementations with your own
-8. Run `make reviewable` to run code generation, linters, and tests.
-9. Run `make build` to build the provider.
+- Install Crossplane:
 
-Refer to Crossplane's [CONTRIBUTING.md] file for more information on how the
-Crossplane community prefers to work. The [Provider Development][provider-dev]
-guide may also be of use.
+  ```
+  $ kc  apply -k https://github.com/crossplane/crossplane//cluster\?ref\=master
+  ```
 
-[CONTRIBUTING.md]: https://github.com/crossplane/crossplane/blob/master/CONTRIBUTING.md
-[provider-dev]: https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md
+  You can also install it using helm as explained [here.](https://docs.crossplane.io/latest/software/install/)
 
-## Local testing
+- Create a secret with simple json app's jwt token like so:
 
-Below images show Crossplane installed on a local cluster and provider-simplejsonapp running against it and resource managed by APIs exposed by [SimpleJsonApp](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp) managed using k8s api.
+  ```
+  $ kc create secret generic simplejsonapp-secret --from-literal=token=<jwt token from simple json app's swagger ui here>
+  ```
 
-// to add documentation on spec
+- Next, with your kube context pointing to cluster, or where ever you wish to install Crossplane and the provider, run:
+  ```
+  $ kubectl apply -f package/testYml/provider-simplejsonapp.yml
+  ```
+  which installs Provider `provider-simplejsonapp` and ProviderConfig `provider-simplejsonapp-config` (which references the secret we created in the previous step)
+
+## Create and manage records
+
+With Crossplane, Provider, ProviderConfig all installed we can now create `records` and manage them using Crossplane's Control plane.
+
+Image showing the newly available `Record` managed resource
+
 ![record resource](./images/Record-resource.png)
 
-By taking this Record spec and applying it:
+Run this command to create a record MR:
 
-```apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
+```
+$ kubctl apply -f package/testYml/record.yml
+```
+
+This file contains spec for the record Managed Resource. Details on some fields added below:
+
+```
+apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
 kind: Record
 metadata:
   name: example-record
   namespace: default
 spec:
-  forProvider:
-    name: "chaitanya"
+  providerConfigRef:
+    name: provider-simplejsonapp-config ## Every MR can point to the Provider Config its Provider could use to authenticate to the external system
+  forProvider: ## contains object with details on record properties
+    name: chaitanyaSomething
     age: 22
-    location: "something"
-    designation: "something"
+    location: something
+    designation: something
     todos:
-      - "see if running in kind woks"
+      - see if running in kind woks
       - set it up with local k8s
+      - causing an update
+      - testing provider image setup
 ```
+
+Once you apply record.yml file, you can then see the record created as part of k8s api (Managed resource) and can also verify
+record being created from simple json app's swagger page (external system)
 
 ### Record creation:
 
 ![record create](./images/record-create.png)
-
-### Record updation:
-
-![record update](./images/record-update.png)
-
-![record update](./images/record-update-on-simplejsonapp.png)
 
 ### Record deletion:
 
 ![record deletion](./images/record-delete.png)
 
 ![record deletion](./images/record-delete-on-simplejsonapp.png)
-
-### Provider Authentication:
-
-`providerconfig/default` is used to configure our `provider-simplejsonapp`. ProviderConfig has references to `secret/simplejsonapp` which contains the auth token used to authenticate to the api server `simpleJsonApp`.
-
-```
-➤ kc get secrets/simplejsonapp-secret
-NAME                   TYPE     DATA   AGE
-simplejsonapp-secret   Opaque   1      10m
-
-➤ kc get providerconfig/default
-NAME      AGE
-default   2d
-
-➤ kc get providerconfig/default -o yaml
-apiVersion: simplejsonapp.crossplane.io/v1alpha1
-kind: ProviderConfig
-metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"simplejsonapp.crossplane.io/v1alpha1","kind":"ProviderConfig","metadata":{"annotations":{},"name":"default"},"spec":{"credentials":{"secretRef":{"key":"token","name":"simplejsonapp-secret","namespace":"default"},"source":"Secret"}}}
-  creationTimestamp: "2023-06-21T03:11:29Z"
-  finalizers:
-  - in-use.crossplane.io
-  generation: 2
-  name: default
-  resourceVersion: "1103646"
-  uid: db8fd032-5a42-4e10-8813-bf85c5663294
-spec:
-  credentials:
-    secretRef:
-      key: token
-      name: simplejsonapp-secret
-      namespace: default
-    source: Secret
-status: {}
-```

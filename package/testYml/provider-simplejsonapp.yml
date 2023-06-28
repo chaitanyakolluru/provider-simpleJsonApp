@@ -5,7 +5,7 @@ kind: Provider
 metadata:
   name: provider-simplejsonapp
 spec:
-  package: provider-simplejsonapp:v1
+  package: chaitanyah368/provider-simplejsonapp:v1
 
 ---
 apiVersion: simplejsonapp.crossplane.io/v1alpha1
@@ -19,22 +19,3 @@ spec:
       name: simplejsonapp-secret
       namespace: default
     source: Secret
----
-apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
-kind: Record
-metadata:
-  name: example-record
-  namespace: default
-spec:
-  providerConfigRef:
-    name: provider-simplejsonapp-config
-  forProvider:
-    name: chaitanyaSomething
-    age: 22
-    location: something
-    designation: something
-    todos:
-      - see if running in kind woks
-      - set it up with local k8s
-      - causing an update
-      - testing provider image setup
