@@ -2,13 +2,13 @@
 apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
 kind: Record
 metadata:
-  name: example-record
+  name: example-record-new
   namespace: default
 spec:
   providerConfigRef:
     name: provider-simplejsonapp-config
   forProvider:
-    name: chaitanyaSomething
+    name: testingNow
     age: 22
     location: something
     designation: something
