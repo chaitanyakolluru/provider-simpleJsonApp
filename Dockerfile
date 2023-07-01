@@ -1,4 +1,4 @@
-FROM docker.nexus.heb.tools/golang:1.20.2-alpine AS golang
+FROM golang:1.20.2-alpine AS golang
 
 # build 
 RUN mkdir -p /build/provider-simpleJsonApp
@@ -11,7 +11,7 @@ COPY go.* /build/provider-simpleJsonApp/
 WORKDIR /build/provider-simpleJsonApp
 RUN go build -o provider-simpleJsonApp ./cmd/provider
 
-FROM docker.nexus.heb.tools/alpine:3.16.0
+FROM alpine:3.16.0
 
 RUN apk update && apk add --no-cache openssl \
     && rm -rf /var/cache/apk/*
