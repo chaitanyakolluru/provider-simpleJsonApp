@@ -8,13 +8,11 @@ This creates json records in an external application called [simple json app](ht
 
 ## Simple json app api server
 
-- Clone [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) locally and run
+- [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) can be installed by this yaml:
 
 ```
-$ go run main.go
+$ kubectl apply -f testYml/simplejsonapp.yml
 ```
-
-to install dependencies and run the app locally on port 8081. Refer to it's README.md for more details on how to authenticate to the app and make requests to it.
 
 ## Provider
 
@@ -25,6 +23,18 @@ to install dependencies and run the app locally on port 8081. Refer to it's READ
   ```
 
   You can also install it using helm as explained [here.](https://docs.crossplane.io/latest/software/install/)
+
+- Get auth token from running app:
+
+  Port-forward into the app and get the auth token from Swagger UI.
+
+  ```
+  kc port-forward <simplejsonapp-pod> -n provider-simplejsonapp 8081:8081
+  ```
+
+  Now navigate to app's Swagger UI [here](http://localhost:8081/swagger/index.html) and execute request /auth/token to get your token
+
+  ![swagger ui auth](./images/swagger-auth.png)
 
 - Create a secret with simple json app's jwt token like so:
 
@@ -44,7 +54,7 @@ to install dependencies and run the app locally on port 8081. Refer to it's READ
   $ kubectl apply -f testYml/provider-simplejsonapp.yml
   ```
 
-  which installs Provider `provider-simplejsonapp` and ProviderConfig `provider-simplejsonapp-config` (which references the secret we created in the previous step)
+  which installs Provider as a pod and sets up necessary permissions for it to be able to manage k8s resources and ProviderConfig `provider-simplejsonapp-config` (which references the secret we created in the previous step)
 
 ## Create and manage records
 
@@ -57,30 +67,32 @@ Image showing the newly available `Record` managed resource
 Run this command to create a record MR:
 
 ```
-
 $ kubctl apply -f testYml/record.yml
-
 ```
 
 This file contains spec for the record Managed Resource. Details on some fields added below:
 
 ```
-
 apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
 kind: Record
 metadata:
-name: example-record
-namespace: default
+  name: example-record-new
+  namespace: default
 spec:
-providerConfigRef:
-name: provider-simplejsonapp-config ## Every MR can point to the Provider Config its Provider could use to authenticate to the external system
-forProvider: ## contains object with details on record properties
-name: chaitanyaSomething
-age: 22
-location: something
-designation: something
-todos: - see if running in kind woks - set it up with local k8s - causing an update - testing provider image setup
-
+  providerConfigRef:
+    name: provider-simplejsonapp-config     ## this references the ProviderConfig and therefore the provider details(secret here) that it needs to use to manage this resource
+  forProvider:              ## everything under this object are Record MR's properties
+    name: testingNow
+    age: 22
+    location: something
+    designation: something
+    todos:
+      - see if running in kind woks
+      - set it up with local k8s
+      - causing an update
+      - testing provider image setup
+      - something new
+      - testing also
 ```
 
 Once you apply record.yml file, you can then see the record created as part of k8s api (Managed resource) and can also verify
@@ -102,7 +114,6 @@ With the previous steps, we have a `Managed Resource` that's now available to us
 some new resources available to us (from installing Crossplane):
 
 ```
-
 compositeresourcedefinitions xrd,xrds apiextensions.crossplane.io/v1 false CompositeResourceDefinition
 compositionrevisions comprev apiextensions.crossplane.io/v1 false CompositionRevision
 compositions comp apiextensions.crossplane.io/v1 false Composition
@@ -114,7 +125,6 @@ locks pkg.crossplane.io/v1beta1 false Lock
 providerrevisions pkg.crossplane.io/v1 false ProviderRevision
 providers pkg.crossplane.io/v1 false Provider
 storeconfigs secrets.crossplane.io/v1alpha1 false StoreConfig
-
 ```
 
 Out of them, we will be setting up a `Composition` and a `Composite Resource Definition(XRD)` to setup a composite set of managed resources. This will be made
@@ -130,20 +140,15 @@ More details on the relationship of the resources and other terminology [here](h
 Install [provider-kubernetes](https://github.com/crossplane-contrib/provider-kubernetes) using below command
 
 ```
-
 $ kubectl apply -f testYml/provider-kubernetes.yml
-
 ```
 
 which creates k8s provider as seen below:
 
 ```
-
 ➤ kc get providers
 NAME INSTALLED HEALTHY PACKAGE AGE
-provider-simplejsonapp provider-simplejsonapp:v1 71m
 provider-kubernetes crossplane/provider-kubernetes:main 5s
-
 ```
 
 ### Apply Composition

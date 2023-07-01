@@ -38,16 +38,19 @@ subjects:
   - kind: ServiceAccount
     name: provider-simplejsonapp
     namespace: provider-simplejsonapp
-## pod way
+## pod way completed
 
 ## installing it as a provider
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-simplejsonapp
-spec:
-  package: chaitanyah368/provider-simplejsonapp:v3
+## has not been working as expected; choosing to deploy
+## provider as a pod, setup permissions around it and will
+## come back to this one later (fingers crossed)
+# ---
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-simplejsonapp
+# spec:
+#   package: chaitanyah368/provider-simplejsonapp:v3
 
 ---
 apiVersion: simplejsonapp.crossplane.io/v1alpha1
