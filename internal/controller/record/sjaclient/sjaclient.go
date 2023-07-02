@@ -40,7 +40,7 @@ func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordParameters
 	return response, nil
 }
 
-func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.RecordParameters, error) {
+func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record, error) {
 	var response v1alpha1.RecordParameters
 
 	err := requests.
@@ -50,13 +50,13 @@ func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record
 		Fetch(ctx)
 
 	if err != nil {
-		return v1alpha1.RecordParameters{}, nil
+		return v1alpha1.Record{}, err
 	}
 
-	return response, nil
+	return v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: response}}, nil
 }
 
-func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
+func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.Record, error) {
 	var response v1alpha1.RecordParameters
 
 	err := requests.
@@ -66,13 +66,13 @@ func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParame
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPostRecord)
+		return v1alpha1.Record{}, errors.Wrap(err, errPostRecord)
 	}
 
-	return response, nil
+	return v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: response}}, nil
 }
 
-func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
+func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.Record, error) {
 	var response v1alpha1.RecordParameters
 
 	err := requests.
@@ -83,13 +83,13 @@ func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParamet
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPutRecord)
+		return v1alpha1.Record{}, errors.Wrap(err, errPutRecord)
 	}
 
-	return response, nil
+	return v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: response}}, nil
 }
 
-func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
+func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.Record, error) {
 	var response v1alpha1.RecordParameters
 
 	err := requests.
@@ -100,8 +100,8 @@ func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordPara
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errDeleteRecord)
+		return v1alpha1.Record{}, errors.Wrap(err, errDeleteRecord)
 	}
 
-	return response, nil
+	return v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: response}}, nil
 }
