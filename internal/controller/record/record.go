@@ -157,11 +157,14 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 
 	// The external resource exists. Copy any output-only fields to their
 	// corresponding entries in our status field.
-	cr.Status.AtProvider.Name = sjaResource.Name
-	cr.Status.AtProvider.Age = sjaResource.Age
-	cr.Status.AtProvider.Designation = sjaResource.Designation
-	cr.Status.AtProvider.Location = sjaResource.Location
-	cr.Status.AtProvider.Todos = sjaResource.Todos
+
+	// cr.Status.AtProvider.Name = sjaResource.Name
+	// cr.Status.AtProvider.Age = sjaResource.Age
+	// cr.Status.AtProvider.Designation = sjaResource.Designation
+	// cr.Status.AtProvider.Location = sjaResource.Location
+	// cr.Status.AtProvider.Todos = sjaResource.Todos
+
+	cr.Status.AtProvider = v1alpha1.RecordObservation(sjaResource)
 
 	// Update our "Ready" status condition to reflect the status of the external
 	// resource.

@@ -18,4 +18,4 @@ RUN apk update && apk add --no-cache openssl \
 
 COPY --from=golang /build/provider-simpleJsonApp/provider-simpleJsonApp /usr/local/bin/
 
-ENTRYPOINT [ "/bin/sh", "-c", "provider-simpleJsonApp"]
+ENTRYPOINT [ "/bin/sh", "-c", "provider-simpleJsonApp", "--debug"]

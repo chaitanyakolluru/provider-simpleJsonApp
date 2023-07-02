@@ -21,7 +21,7 @@ metadata:
 spec:
   serviceAccountName: provider-simplejsonapp
   containers:
-    - image: chaitanyah368/provider-simplejsonapp:v3
+    - image: chaitanyah368/provider-simplejsonapp:v4
       imagePullPolicy: IfNotPresent
       name: provider
 
