@@ -146,7 +146,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		}, errors.Wrap(err, errCantGet)
 	}
 
-	if sjaResource.Spec.ForProvider.Name != cr.Spec.ForProvider.Name {
+	if sjaResource.Name != cr.Spec.ForProvider.Name {
 		return managed.ExternalObservation{
 			ResourceExists:    false,
 			ResourceUpToDate:  false,
@@ -154,27 +154,7 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		}, nil
 	}
 
-	// // The external resource exists. Copy any output-only fields to their
-	// // corresponding entries in our status field.
-	// sjaResource.Status.Status = existing.GetStatus()
-	// i.Status.Hostname = existing.GetHostname()
-	// i.Status.ID = existing.GetID()
-
-	// // Update our "Ready" status condition to reflect the status of the external
-	// // resource. Most managed resources use the below well known reasons that
-	// // the "Ready" status may be true or false, but managed resource authors
-	// // are welcome to define and use their own.
-	// switch i.Status.Status {
-	// case database.StatusOnline:
-	// 	resource.SetBindable(i)
-	// 	i.SetConditions(xpv1.Available())
-	// case database.StatusCreating:
-	// 	i.SetConditions(xpv1.Creating())
-	// case database.StatusDeleting:
-	// 	i.SetConditions(xpv1.Deleting())
-	// }
-
-	if diff := cmp.Diff(sjaResource.Spec.ForProvider, cr.Spec.ForProvider); diff != "" {
+	if diff := cmp.Diff(sjaResource, cr.Spec.ForProvider); diff != "" {
 		return managed.ExternalObservation{
 			ResourceExists:    true,
 			ResourceUpToDate:  false,

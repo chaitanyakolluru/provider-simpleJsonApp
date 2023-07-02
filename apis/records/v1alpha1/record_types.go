@@ -36,11 +36,7 @@ type RecordParameters struct {
 
 // RecordObservation are the observable fields of a Record.
 type RecordObservation struct {
-	Name        string   `json:"name"`
-	Age         int      `json:"age"`
-	Designation string   `json:"designation"`
-	Location    string   `json:"location"`
-	Todos       []string `json:"todos"`
+	ObservableField string `json:"observableField,omitempty"`
 }
 
 // A RecordSpec defines the desired state of a Record.
