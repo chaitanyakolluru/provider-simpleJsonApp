@@ -1,15 +1,15 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xjsonppp.simplejsonapp.crossplane.io
+  name: xjsonppps.simplejsonapp.crossplane.io
 spec:
-  group: simplejsonapp.crossplane.io/v1alpha1
+  group: simplejsonapp.crossplane.io
   names:
     kind: XJsonApp
-    plural: XJsonApps
+    plural: xjsonapps
   claimNames:
     kind: JsonApp
-    plural: JsonApps
+    plural: jsonapps
   versions:
     - name: v1alpha1
       served: true

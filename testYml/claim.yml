@@ -1,4 +1,4 @@
-apiVersion: jsonapp.simplejsonapp.crossplane.io/v1alpha1
+apiVersion: simplejsonapp.crossplane.io/v1alpha1
 kind: JsonApp
 metadata:
   name: example-json-app

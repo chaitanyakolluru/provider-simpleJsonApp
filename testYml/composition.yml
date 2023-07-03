@@ -7,7 +7,7 @@ metadata:
     provider: provider-simplejsonapp
 spec:
   compositeTypeRef:
-    apiVersion: xjsonapp.simplejsonapp.crossplane.io/v1alpha1
+    apiVersion: simplejsonapp.crossplane.io/v1alpha1
     kind: XJsonApp
   resources:
     - name: record
