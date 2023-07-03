@@ -29,6 +29,11 @@ spec:
           toFieldPath: spec.forProvider
           policy:
             fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: spec.forProvider
+          toFieldPath: status.record
+          policy:
+            fromFieldPath: Required
     # - name: gateway
     #   base:
     #     apiVersion: kubernetes.crossplane.io/v1alpha1
