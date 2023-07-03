@@ -293,8 +293,18 @@ spec:
                 atProvider:
                   description: RecordObservation are the observable fields of a Record.
                   properties:
-                    observableField:
+                    name:
                       type: string
+                    age:
+                      type: integer
+                    designation:
+                      type: string
+                    location:
+                      type: string
+                    todos:
+                      type: array
+                      items:
+                        type: string
                   type: object
                 conditions:
                   description: Conditions of the resource.

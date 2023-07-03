@@ -136,8 +136,6 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 		return managed.ExternalObservation{}, errors.New(errNotRecord)
 	}
 
-	// as yet, it doesn't distinguish between error with reqiest vs object not being present.
-	// todo
 	sjaResource, err := c.service.GetRecord(ctx, cr.Spec.ForProvider.Name)
 	if err != nil {
 		return managed.ExternalObservation{
@@ -158,17 +156,10 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	// The external resource exists. Copy any output-only fields to their
 	// corresponding entries in our status field.
 
-	// cr.Status.AtProvider.Name = sjaResource.Name
-	// cr.Status.AtProvider.Age = sjaResource.Age
-	// cr.Status.AtProvider.Designation = sjaResource.Designation
-	// cr.Status.AtProvider.Location = sjaResource.Location
-	// cr.Status.AtProvider.Todos = sjaResource.Todos
-
-	cr.Status.AtProvider = v1alpha1.RecordObservation(sjaResource)
-
+	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
 	// Update our "Ready" status condition to reflect the status of the external
 	// resource.
-	switch cr.Status.AtProvider.Name {
+	switch cr.Status.Name {
 	case "":
 		cr.SetConditions(xpv1.Unavailable())
 	default:

@@ -52,7 +52,7 @@ type RecordSpec struct {
 // A RecordStatus represents the observed state of a Record.
 type RecordStatus struct {
 	xpv1.ResourceStatus `json:",inline"`
-	AtProvider          RecordObservation `json:"atProvider,omitempty"`
+	RecordObservation   `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
