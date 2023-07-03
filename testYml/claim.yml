@@ -13,5 +13,3 @@ spec:
       - new record added
   compositionRef:
     name: simplejsonapp-composition
-  resourceRef:
-    name: xjsonppp.simplejsonapp.crossplane.io
