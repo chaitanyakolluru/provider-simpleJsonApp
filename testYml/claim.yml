@@ -1,0 +1,17 @@
+apiVersion: jsonapp.simplejsonapp.crossplane.io/v1alpha1
+kind: JsonApp
+metadata:
+  name: example-json-app
+spec:
+  parameters:
+    name: testingNow
+    age: 22
+    location: something
+    designation: something
+    todos:
+      - see if running in kind woks
+      - new record added
+  compositionRef:
+    name: simplejsonapp-composition
+  resourceRef:
+    name: xjsonppp.simplejsonapp.crossplane.io
