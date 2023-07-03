@@ -1,0 +1,273 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: simplejsonapp-composition
+  labels:
+    crossplane.io/xrd: xjsonppp.simplejsonapp.crossplane.io
+    provider: provider-simplejsonapp
+spec:
+  compositeTypeRef:
+    apiVersion: xjsonapp.simplejsonapp.crossplane.io/v1alpha1
+    kind: XJsonApp
+  resources:
+    - name: record
+      base:
+        apiVersion: records.simplejsonapp.crossplane.io/v1alpha1
+        kind: Record
+        spec:
+          forProvider:
+          providerConfigRef:
+            name: provider-simplejsonapp-config
+      patches:
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: metadata.namespace
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: spec.parameters
+          toFieldPath: spec.forProvider
+          policy:
+            fromFieldPath: Required
+    # - name: gateway
+    #   base:
+    #     apiVersion: kubernetes.crossplane.io/v1alpha1
+    #     kind: Object
+    #     spec:
+    #       forProvider:
+    #         manifest:
+    #           apiVersion: networking.istio.io/v1alpha3
+    #           kind: Gateway
+    #           metadata:
+    #             namespace: istio-ingress
+    #           spec:
+    #             selector:
+    #               istio: main-gateway
+    #             servers:
+    #               - hosts: []
+    #                 port:
+    #                   name: http
+    #                   number: 80
+    #                   protocol: HTTP
+    #       providerConfigRef:
+    #         name: kubernetes-provider
+    #   patches:
+    #     - type: CombineFromComposite
+    #       combine:
+    #         variables:
+    #           # represents the team-name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #           # represents the app name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #         strategy: string
+    #         string:
+    #           fmt: "%s--%s"
+    #       toFieldPath: spec.forProvider.manifest.metadata.name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: CombineFromComposite
+    #       combine:
+    #         variables:
+    #           # represents the team-name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #           # represents the app name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #           # represents the team-name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #         strategy: string
+    #         string:
+    #           # e.g. demo-team/demo-app.demo-team.oneplatform.heb.com
+    #           fmt: "%s/%s.%s.oneplatform.heb.com"
+    #       toFieldPath: spec.forProvider.manifest.spec.servers[0].hosts[0]
+    #       policy:
+    #         fromFieldPath: Required
+    # - name: virtualservice
+    #   base:
+    #     apiVersion: kubernetes.crossplane.io/v1alpha1
+    #     kind: Object
+    #     spec:
+    #       forProvider:
+    #         manifest:
+    #           apiVersion: networking.istio.io/v1alpha3
+    #           kind: VirtualService
+    #           spec:
+    #             hosts: []
+    #             gateways: []
+    #             http:
+    #               - route:
+    #                   - destination:
+    #                       port:
+    #                         number: 8000
+    #       providerConfigRef:
+    #         name: kubernetes-provider
+    #   patches:
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.forProvider.manifest.metadata.namespace
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.http[0].route[0].destination.host
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: CombineFromComposite
+    #       combine:
+    #         variables:
+    #           # represents the app name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #           # represents the team-name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #         strategy: string
+    #         string:
+    #           # e.g. demo-team/demo-app.demo-team.oneplatform.heb.com
+    #           fmt: "%s.%s.oneplatform.heb.com"
+    #       toFieldPath: spec.forProvider.manifest.spec.hosts[0]
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: CombineFromComposite
+    #       combine:
+    #         variables:
+    #           # represents the team-name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #           # represents the app name
+    #           - fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #         strategy: string
+    #         string:
+    #           fmt: "istio-ingress/%s--%s"
+    #       toFieldPath: spec.forProvider.manifest.spec.gateways[0]
+    #       policy:
+    #         fromFieldPath: Required
+    # - name: serviceaccount
+    #   base:
+    #     apiVersion: kubernetes.crossplane.io/v1alpha1
+    #     kind: Object
+    #     spec:
+    #       forProvider:
+    #         manifest:
+    #           apiVersion: v1
+    #           kind: ServiceAccount
+    #       providerConfigRef:
+    #         name: kubernetes-provider
+    #   patches:
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.forProvider.manifest.metadata.namespace
+    #       policy:
+    #         fromFieldPath: Required
+    # - name: service
+    #   base:
+    #     apiVersion: kubernetes.crossplane.io/v1alpha1
+    #     kind: Object
+    #     spec:
+    #       forProvider:
+    #         manifest:
+    #           apiVersion: v1
+    #           kind: Service
+    #           spec:
+    #             ports:
+    #               - name: http
+    #                 port: 8000
+    #             selector:
+    #               app: demo-app
+    #       providerConfigRef:
+    #         name: kubernetes-provider
+    #   patches:
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.forProvider.manifest.metadata.namespace
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.labels.app
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.labels.service
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: spec.parameters.port
+    #       toFieldPath: spec.forProvider.manifest.spec.ports[0].targetPort
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.selector.app
+    #       policy:
+    #         fromFieldPath: Required
+    # - name: deployment
+    #   base:
+    #     apiVersion: kubernetes.crossplane.io/v1alpha1
+    #     kind: Object
+    #     spec:
+    #       forProvider:
+    #         manifest:
+    #           apiVersion: apps/v1
+    #           kind: Deployment
+    #           spec:
+    #             replicas: 1
+    #             template:
+    #               spec:
+    #                 containers:
+    #                   - imagePullPolicy: IfNotPresent
+    #       providerConfigRef:
+    #         name: kubernetes-provider
+    #   patches:
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.metadata.name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+    #       toFieldPath: spec.forProvider.manifest.metadata.namespace
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.selector.matchLabels.app
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.template.metadata.labels.app
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.template.spec.serviceAccountName
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: spec.parameters.image
+    #       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].image
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: metadata.labels[crossplane.io/claim-name]
+    #       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].name
+    #       policy:
+    #         fromFieldPath: Required
+    #     - type: FromCompositeFieldPath
+    #       fromFieldPath: spec.parameters.port
+    #       toFieldPath: spec.forProvider.manifest.spec.template.spec.containers[0].ports[0].containerPort
+    #       policy:
+    #         fromFieldPath: Required
