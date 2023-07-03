@@ -188,10 +188,12 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 	}
 
 	cr.SetConditions(xpv1.Creating())
-	_, err := c.service.PostRecord(ctx, cr.Spec.ForProvider)
+	sjaResource, err := c.service.PostRecord(ctx, cr.Spec.ForProvider)
 	if err != nil {
 		return managed.ExternalCreation{}, errors.Wrap(err, errCantCreateRecord)
 	}
+
+	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
 
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -206,10 +208,12 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalUpdate{}, errors.New(errNotRecord)
 	}
 
-	_, err := c.service.PutRecord(ctx, cr.Spec.ForProvider)
+	sjaResource, err := c.service.PutRecord(ctx, cr.Spec.ForProvider)
 	if err != nil {
 		return managed.ExternalUpdate{}, errors.Wrap(err, errCantUpdateRecord)
 	}
+
+	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
 
 	return managed.ExternalUpdate{
 		// Optionally return any details that may be required to connect to the

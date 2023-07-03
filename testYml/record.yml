@@ -14,3 +14,4 @@ spec:
     designation: something
     todos:
       - see if running in kind woks
+      - new record added
