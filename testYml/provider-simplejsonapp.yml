@@ -65,5 +65,5 @@ spec:
     secretRef:
       key: token
       name: simplejsonapp-secret
-      namespace: default
+      namespace: crossplane-system
     source: Secret
