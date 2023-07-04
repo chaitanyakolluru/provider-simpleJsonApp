@@ -13,17 +13,17 @@ metadata:
   namespace: provider-simplejsonapp
 
 ---
-# apiVersion: v1
-# kind: Pod
-# metadata:
-#   name: provider-simplejsonapp
-#   namespace: provider-simplejsonapp
-# spec:
-#   serviceAccountName: provider-simplejsonapp
-#   containers:
-#     - image: chaitanyah368/provider-simplejsonapp:v4
-#       imagePullPolicy: IfNotPresent
-#       name: provider
+apiVersion: v1
+kind: Pod
+metadata:
+  name: provider-simplejsonapp
+  namespace: provider-simplejsonapp
+spec:
+  serviceAccountName: provider-simplejsonapp
+  containers:
+    - image: chaitanyah368/provider-simplejsonapp:v4
+      imagePullPolicy: IfNotPresent
+      name: provider
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -45,16 +45,29 @@ subjects:
 
 ## installing it as a provider
 ## has not been working as expected; choosing to deploy
-## provider as a pod, setup permissions around it and will
-## come back to this one later (fingers crossed)
+## provider as a pod, setup permissions around it
+
+## Installing it as a provider causes its ProviderRevision to be unhealthy for some reason.
+## Deploying it as a pod and developing Composite Resources using them for now
+
+# (⎈|rancher-desktop)provider-kubernetes ➤ kc get providers/provider-simplejsonapp                                                                                                   git:main
+# NAME                     INSTALLED   HEALTHY   PACKAGE                                   AGE
+# provider-simplejsonapp   True        False     chaitanyah368/provider-simplejsonapp:v4   16m
+# (⎈|rancher-desktop)provider-kubernetes ➤ kc get providerrevisions                                                                                                                  git:main
+# NAME                                  HEALTHY   REVISION   IMAGE                                     STATE    DEP-FOUND   DEP-INSTALLED   AGE
+# provider-kubernetes-f935b3d8b7ec      True      1          crossplane/provider-kubernetes:main       Active                               29h
+# provider-simplejsonapp-431fa1489e89   False     1          chaitanyah368/provider-simplejsonapp:v4   Active                               17m
+# (⎈|rancher-desktop)provider-kubernetes ➤ kc get providerrevisions/provider-simplejsonapp-431fa1489e89                                                                              git:main
+# NAME                                  HEALTHY   REVISION   IMAGE                                     STATE    DEP-FOUND   DEP-INSTALLED   AGE
+# provider-simplejsonapp-431fa1489e89   False     1          chaitanyah368/provider-simplejsonapp:v4   Active                               17m
 ---
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-simplejsonapp
-spec:
-  package: chaitanyah368/provider-simplejsonapp:v4
-  packagePullPolicy: IfNotPresent
+# apiVersion: pkg.crossplane.io/v1
+# kind: Provider
+# metadata:
+#   name: provider-simplejsonapp
+# spec:
+#   package: chaitanyah368/provider-simplejsonapp:v4
+#   packagePullPolicy: IfNotPresent
 ---
 apiVersion: simplejsonapp.crossplane.io/v1alpha1
 kind: ProviderConfig
