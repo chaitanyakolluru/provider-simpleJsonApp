@@ -38,6 +38,9 @@ subjects:
   - kind: ServiceAccount
     name: provider-simplejsonapp
     namespace: provider-simplejsonapp
+  - kind: ServiceAccount
+    name: crossplane
+    namespace: crossplane-system
 ## pod way completed
 
 ## installing it as a provider

@@ -4,3 +4,16 @@ metadata:
   name: provider-kubernetes
 spec:
   package: "crossplane/provider-kubernetes:main"
+
+---
+apiVersion: kubernetes.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: kubernetes-provider
+spec:
+  credentials:
+    secretRef:
+      key: kubeconfig
+      name: rancher-desktop-kubeconfig
+      namespace: crossplane-system
+    source: Secret
