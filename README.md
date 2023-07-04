@@ -1,8 +1,12 @@
 # provider-simplejsonapp
 
+[simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) is a simple api server which exposes some api endpoints and will act as the external resource for which we'll build a provider for.
+
 `provider-simplejsonapp` is a minimal [Crossplane](https://crossplane.io/) Provider,
 using which one can express external json records as a k8s `record` resource.
-This creates json records in an external application called [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp). Below installation process helps with setting up the api server and Crossplane, along with this provider locally.
+This creates json records in simple json app. Once the provider is installed, we will be able to manage records in the api server using Managed Reosurce `Record`.
+
+Once that is done, we will devleop `Composition`, `XRD` and `Claim` to expose record object as a ConfigMap k8s resource and have a deployment use it, to prove we can build Composites of Managed Resources from more than one provider, with output (stored in MR's status) of one MR being fed into a ConfigMap MR and subsequently, to the deployment MR within the Composite reosurce.
 
 # Installation
 
@@ -13,6 +17,8 @@ This creates json records in an external application called [simple json app](ht
   ```
   $ kubectl apply -f testYml/simplejsonapp.yml
   ```
+
+  which installs simple json app api server as a deployment and exposes it with a k8s service resource.
 
 ## Provider
 
