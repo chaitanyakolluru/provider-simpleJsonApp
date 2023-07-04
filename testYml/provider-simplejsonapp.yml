@@ -13,17 +13,17 @@ metadata:
   namespace: provider-simplejsonapp
 
 ---
-apiVersion: v1
-kind: Pod
-metadata:
-  name: provider-simplejsonapp
-  namespace: provider-simplejsonapp
-spec:
-  serviceAccountName: provider-simplejsonapp
-  containers:
-    - image: chaitanyah368/provider-simplejsonapp:v4
-      imagePullPolicy: IfNotPresent
-      name: provider
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: provider-simplejsonapp
+#   namespace: provider-simplejsonapp
+# spec:
+#   serviceAccountName: provider-simplejsonapp
+#   containers:
+#     - image: chaitanyah368/provider-simplejsonapp:v4
+#       imagePullPolicy: IfNotPresent
+#       name: provider
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -47,14 +47,14 @@ subjects:
 ## has not been working as expected; choosing to deploy
 ## provider as a pod, setup permissions around it and will
 ## come back to this one later (fingers crossed)
-# ---
-# apiVersion: pkg.crossplane.io/v1
-# kind: Provider
-# metadata:
-#   name: provider-simplejsonapp
-# spec:
-#   package: chaitanyah368/provider-simplejsonapp:v3
-
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-simplejsonapp
+spec:
+  package: chaitanyah368/provider-simplejsonapp:v4
+  packagePullPolicy: IfNotPresent
 ---
 apiVersion: simplejsonapp.crossplane.io/v1alpha1
 kind: ProviderConfig
