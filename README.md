@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) is a simple api server which exposes some api endpoints and will act as the external resource for which we'll build a Custom Crossplane provider `provider-simplejsonapp`.
+[simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp) is a simple api server which exposes some api endpoints and will act as the external resource for which we'll build a Custom Crossplane provider `provider-simplejsonapp`.
 
 `provider-simplejsonapp` is a minimal [Crossplane](https://crossplane.io/) Provider using which one can express external json records as a k8s `record` resource. Once the provider is installed, we will be able to manage records in the api server using a Managed Reosurce available to us from the k8s api called `Record`.
 
@@ -25,7 +25,7 @@ $ helm install crossplane \
 `Note: We will deploy an instance of the simple json app within our local cluster. The provider is hard-coded to use the service that this deployment is exposed by to create and manage record resources.
   In actual practice, this will be an external system, like a resource in`GCP`or a external RESTful API, but we choose to setup this app within the same cluster for demonstration purposes.`
 
-- [simple json app](https://gitlab.com/heb-engineering/teams/platform-engineering/gke-hybrid-cloud/kon/crossplane/simplejsonapp/simplejsonapp) can be installed using this yaml:
+- [simple json app](https://github.com/chaitanyakolluru/go-works/tree/main/simpleJsonApp) can be installed using this yaml:
 
   ```
   $ kubectl apply -f testYml/simplejsonapp.yml
