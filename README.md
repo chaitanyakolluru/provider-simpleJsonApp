@@ -274,3 +274,9 @@ Below images show all resources being created:
 ### Deployment with pod containing record attributes:
 
 ![dep-record-data](./images/deploy-with-pod-containing-record-data.png)
+
+## Conclusion and further discussion:
+
+As demonstrated in above sections, this allows for platform teams to setup a structure around a Composite of k8s resources and expose it as a simple `Claim` namespaced interface to consumers of the platform, thereby abstracting the complexity of creating and managing internal and external (to k8s) systems using only a `Claim` resource.
+
+For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` MR and for every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib), or develop a custom provider as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
