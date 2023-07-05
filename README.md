@@ -161,7 +161,7 @@ Other things to note with the `Record` managed resource definition in the `Compo
 
   This resource object has three patches, first two apply patches to the Managed Resource, the third applies a patch to the Composite Resource so it can later pass record details down to `ConfigMap` managed resource.
 
-  First two update Record Managed Resource's name and namespace with labels added to the XR based on the Claim it gets created from, and the third sets `status.record` on the XR from record's `spec.froProvider`.
+  First two update Record Managed Resource's name and namespace with labels added to the XR based on the Claim it gets created from, and the third sets `status.record` on the XR from record's `spec.forProvider`.
 
   ```
   patches:
@@ -234,7 +234,7 @@ Things to note in second resource, `configmap`:
       fromFieldPath: Required
   ```
 
-`Note: For more details on patch types see [here.](https://docs.crossplane.io/v1.10/reference/composition/#patch-types)`
+Note: For more details on patch types see [here.](https://docs.crossplane.io/v1.10/reference/composition/#patch-types)
 
 Things to note with the third resource, `deployment`:
 
