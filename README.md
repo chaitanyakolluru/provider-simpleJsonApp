@@ -257,7 +257,7 @@ Below images show all resources being created:
 
 ### `XJsonApp` XR being created:
 
-![jsonapp claim](./images/jsonapp-claim.png)
+![jsonapp claim](./images/xjsonapp-XR.png)
 
 ### `Record` MR from provider-simplejsonapp being created:
 
