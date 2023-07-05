@@ -355,6 +355,11 @@ Below images show all resources being created:
 
 ## Conclusion and further discussion:
 
-As demonstrated in above sections, this allows for platform teams to setup a structure around a Composite of k8s resources and expose it as a simple `Claim` namespaced interface to consumers of the platform, thereby abstracting the complexity of creating and managing internal and external (to k8s) systems using only a `Claim` resource.
+Hence, using Crossplane a platform team can setup a resource combining already existing kubernetes resources and other external resources and expose the creation and management of that resource as a simple `Claim` namespaced resource for consumer use.
 
-For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` MR and for every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib), or develop a custom provider as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
+From platoform's perspective, this allows them to create simple interfaces to complex resources and allows consumers to create said resources at a namespaced level without knowing anything about either Crossplane or any resources that make up the `XR`.
+
+For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` MR. For every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib) or develop custom providers, as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
+
+Guide on Provider Development [here](https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md)
+Crossplane Documentation [here](https://docs.crossplane.io/latest/)
