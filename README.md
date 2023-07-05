@@ -63,7 +63,14 @@ $ helm install crossplane \
 
 ## Provider-kubernetes installation
 
-## Todo: Best way for provider to auth into the k8s cluster.
+- We want to setup a secret containing cluster's kubeconfig for use by the provider. Assuming you have kubeconfig in a file called `./kubeconfig.yml`,
+  the below command should setup a secret in `crossplane-system` namespace that `ProviderConfig kubernetes-provider` installed as part of next step, will use to setup config to use by the provider.
+
+  ```
+  $ kubectl create secret generic rancher-desktop-kubeconfig --from-file=kubeconfig=./kubeconfig.yml -n crossplane-system
+  ```
+
+  Other ways to setup config may exist, but this method to setup config was used in this case.
 
 - Install provider-kubernetes using below command:
 
