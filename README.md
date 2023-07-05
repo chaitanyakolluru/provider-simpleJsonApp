@@ -361,5 +361,6 @@ From platform manager's perspective, this allows them to create simple interface
 
 For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` Managed Resource. For every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib) or develop custom providers, as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
 
-Guide on Provider Development [here](https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md)
+`provider-simplejsonapp` was built using guide on developing custom Crossplane providers [here.](https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md)
+
 Crossplane Documentation [here](https://docs.crossplane.io/latest/)
