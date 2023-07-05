@@ -84,19 +84,19 @@ $ helm install crossplane \
   $ kubectl apply -f testYml/provider-kubernetes.yml
   ```
 
-  which installs the Provider and its associated ProviderConfig (used by Object MRs later for kubeconfig)
+  which installs the Provider and its associated ProviderConfig (used by Object Managed Resources later for kubeconfig)
 
-## Record MR from provider-simplejsonapp in action
+## Record Managed Resource from provider-simplejsonapp in action
 
 We have a Managed Resource called "Record" that's provided to us by `provider-simplejsonapp`. Below section shows that you can using the Managed Resource `Record` create and manage those record objects:
 
-Below command to create a Record MR:
+Below command to create a Record Managed Resource:
 
 ```
 $ kubectl apply -f testYml/record.yml
 ```
 
-This creates a MR called record with properties as shown below in spec.forProvider:
+This creates a Managed Resource called record with properties as shown below in spec.forProvider:
 
 ```
 ---
@@ -118,7 +118,7 @@ spec:
       - new record added
 ```
 
-When this yaml is applied, it creates a MR and makes an api call to create the json record in the `simplejsonapp` deployed in `provider-simplejsonapp` namespace. It uses ProviderConfig `provider-simplejsonapp-config` as referenced by spec.providerConfigRef in the yaml, which contains the auth token used to auth and make calls against the simplejsonapp api server. Below are images showing successful creation of the record within the api server.
+When this yaml is applied, it creates a Managed Resource and makes an api call to create the json record in the `simplejsonapp` deployed in `provider-simplejsonapp` namespace. It uses ProviderConfig `provider-simplejsonapp-config` as referenced by spec.providerConfigRef in the yaml, which contains the auth token used to auth and make calls against the simplejsonapp api server. Below are images showing successful creation of the record within the api server.
 
 ### Record created:
 
@@ -161,7 +161,7 @@ Other things to note with the `Record` managed resource definition in the `Compo
 
   This resource object has three patches, first two apply patches to the Managed Resource, the third applies a patch to the Composite Resource so it can later pass record details down to `ConfigMap` managed resource.
 
-  First two update Record MR's name and namespace with labels added to the XR based on the Claim it gets created from, and the third sets `status.record` on the XR from record's `spec.froProvider`.
+  First two update Record Managed Resource's name and namespace with labels added to the XR based on the Claim it gets created from, and the third sets `status.record` on the XR from record's `spec.froProvider`.
 
   ```
   patches:
@@ -182,7 +182,7 @@ Other things to note with the `Record` managed resource definition in the `Compo
         fromFieldPath: Required
   ```
 
-Rest two Object MRs for k8s' Deployment and ConfigMap resources:
+Rest two Object Managed Resources for k8s' Deployment and ConfigMap resources:
 
 These are defined using `provider-kubernetes`'s `Object` managed resource, which is simply a Crossplane provider abstraction over an existing k8s resource and allows for a regular k8s resource to be embedded into a `Crossplane Composition` and managed as one of the managed resources within a `XR`.
 
@@ -238,7 +238,7 @@ Things to note in second resource, `configmap`:
 
 Things to note with the third resource, `deployment`:
 
-- This deployment simply exposes the contents of the ConfigMap from previous step and shows that we can access record MR's data from within the deployment.
+- This deployment simply exposes the contents of the ConfigMap from previous step and shows that we can access record Managed Resource's data from within the deployment.
 - As far as patches go, the only notable one appears as the second patch item patching configMap name to be used by the Deployment to refer while creating mount path in its pod.
 
   ```
@@ -337,11 +337,11 @@ Below images show all resources being created:
 
 ![jsonapp claim](./images/xjsonapp-XR.png)
 
-### `Record` MR from provider-simplejsonapp being created:
+### `Record` Managed Resource from provider-simplejsonapp being created:
 
 ![record mr](./images/record-mr.png)
 
-### `Object` MRs from provider-kubernetes (for Deployment and ConfigMap):
+### `Object` Managed Resources from provider-kubernetes (for Deployment and ConfigMap):
 
 ![object mrs](./images/both-object-mrs.png)
 
@@ -359,7 +359,7 @@ Hence, using Crossplane a platform team can setup a resource combining already e
 
 From platoform's perspective, this allows them to create simple interfaces to complex resources and allows consumers to create said resources at a namespaced level without knowing anything about either Crossplane or any resources that make up the `XR`.
 
-For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` MR. For every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib) or develop custom providers, as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
+For every exisitng k8s resource we could use `provider-kubernetes` to wrap them into a `Object` Managed Resource. For every external system we could either install existing Crossplane community providers from [here](https://github.com/crossplane-contrib) or develop custom providers, as demonstrated by exposing simple json app's api endpoints using `provider-simplejsonapp`.
 
 Guide on Provider Development [here](https://github.com/crossplane/crossplane/blob/master/contributing/guide-provider-development.md)
 Crossplane Documentation [here](https://docs.crossplane.io/latest/)
