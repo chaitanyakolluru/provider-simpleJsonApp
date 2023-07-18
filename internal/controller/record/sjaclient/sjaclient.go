@@ -50,7 +50,7 @@ func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record
 		Fetch(ctx)
 
 	if err != nil {
-		return v1alpha1.RecordParameters{}, nil
+		return v1alpha1.RecordParameters{}, errors.Wrap(err, errGetRecord)
 	}
 
 	return response, nil
