@@ -6,11 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 
+	v1alpha1 "git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
 	"github.com/carlmjohnson/requests"
-	v1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
 )
 
-const SIMPLE_JSON_APP_BASEURL = "http://simplejsonapp-svc.provider-simplejsonapp/json"
+const SIMPLE_JSON_APP_BASEURL = "http://localhost:8081/json"
 const (
 	errGetRecords   = "get /records error"
 	errGetRecord    = "get /record/{name} error"

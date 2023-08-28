@@ -1,0 +1,12 @@
+---
+apiVersion: simplejsonapp.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: provider-simplejsonapp-config
+spec:
+  credentials:
+    secretRef:
+      key: token
+      name: simplejsonapp-secret
+      namespace: crossplane-system
+    source: Secret

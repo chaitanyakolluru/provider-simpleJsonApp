@@ -19,10 +19,10 @@ package record
 import (
 	"context"
 
-	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
-	apisv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/features"
+	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
+	apisv1alpha1 "git.heb.com/provider-simplejsonapp/apis/v1alpha1"
+	"git.heb.com/provider-simplejsonapp/internal/controller/record/sjaclient"
+	"git.heb.com/provider-simplejsonapp/internal/features"
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	"github.com/crossplane/crossplane-runtime/pkg/connection"
 	"github.com/crossplane/crossplane-runtime/pkg/controller"

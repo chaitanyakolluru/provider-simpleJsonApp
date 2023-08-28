@@ -20,8 +20,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
+	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
+	"git.heb.com/provider-simplejsonapp/internal/controller/record/sjaclient"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	"github.com/crossplane/crossplane-runtime/pkg/test"

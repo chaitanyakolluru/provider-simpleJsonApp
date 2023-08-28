@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
+	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
 )
 
 func TestGetRecords(t *testing.T) {

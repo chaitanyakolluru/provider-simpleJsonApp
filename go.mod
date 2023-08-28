@@ -1,4 +1,4 @@
-module github.com/chaitanyakolluru/provider-simplejsonapp
+module git.heb.com/provider-simplejsonapp
 
 go 1.19
 
