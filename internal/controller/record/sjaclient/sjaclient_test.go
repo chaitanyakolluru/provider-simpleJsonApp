@@ -2,8 +2,9 @@ package sjaclient
 
 import (
 	"context"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 
 	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
 	"github.com/kelseyhightower/envconfig"
@@ -26,7 +27,7 @@ func processEnvVars() string {
 	return env_vars.Token
 }
 
-func createRecord(sjaclient *SjaClient, t *testing.T) v1alpha1.RecordParameters {
+func createRecord(sjaclient *SjaClient, t *testing.T) v1alpha1.RecordObservation {
 	want, err := sjaclient.PostRecord(context.TODO(), testRecord)
 
 	if err != nil {
@@ -36,7 +37,7 @@ func createRecord(sjaclient *SjaClient, t *testing.T) v1alpha1.RecordParameters 
 	return want
 }
 
-func deleteRecord(sjaclient *SjaClient, t *testing.T) v1alpha1.RecordParameters {
+func deleteRecord(sjaclient *SjaClient, t *testing.T) v1alpha1.RecordObservation {
 	want, err := sjaclient.DeleteRecord(context.TODO(), testRecord)
 
 	if err != nil {
@@ -58,8 +59,8 @@ func TestGetRecords(t *testing.T) {
 
 	for _, rp := range got {
 		if rp.Name == want.Name {
-			if !reflect.DeepEqual(rp, want) {
-				t.Errorf("got: %v, want: %v", rp, want)
+			if diff := cmp.Diff(rp, want); diff != "" {
+				t.Errorf("-got error, +want error, %s", diff)
 			}
 		}
 	}
@@ -77,8 +78,8 @@ func TestGetRecord(t *testing.T) {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got: %v, want: %v", got, want)
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("-got error, +want error, %s", diff)
 	}
 
 	deleteRecord(sjaclient, t)
@@ -86,10 +87,17 @@ func TestGetRecord(t *testing.T) {
 
 func TestPostRecord(t *testing.T) {
 	sjaclient := CreateSjaClient(processEnvVars())
-	got := createRecord(sjaclient, t)
+	want := createRecord(sjaclient, t)
 
-	if !reflect.DeepEqual(got, testRecord) {
-		t.Errorf("got: %v, want: %v", got, testRecord)
+	var request v1alpha1.RecordParameters
+	request.Name = want.Name
+	request.Age = want.Age
+	request.Designation = want.Designation
+	request.Location = want.Location
+	request.Todos = want.Todos
+
+	if diff := cmp.Diff(request, testRecord); diff != "" {
+		t.Errorf("-got error, +want error, %s", diff)
 	}
 
 	deleteRecord(sjaclient, t)
@@ -99,17 +107,22 @@ func TestPutRecord(t *testing.T) {
 	sjaclient := CreateSjaClient(processEnvVars())
 
 	want := createRecord(sjaclient, t)
+	want.Designation = "designation changed"
 
-	request := want
-	request.Designation = "designation changed"
+	var request v1alpha1.RecordParameters
+	request.Name = want.Name
+	request.Age = want.Age
+	request.Designation = want.Designation
+	request.Location = want.Location
+	request.Todos = want.Todos
 
 	got, err := sjaclient.PutRecord(context.TODO(), request)
 	if err != nil {
 		t.Errorf("PutRecord() failed with %s", err.Error())
 	}
 
-	if !reflect.DeepEqual(got, request) {
-		t.Errorf("got: %v, want: %v", got, request)
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("-want error, +got error: %s", diff)
 	}
 
 	deleteRecord(sjaclient, t)
@@ -120,12 +133,20 @@ func TestDeleteRecord(t *testing.T) {
 
 	want := createRecord(sjaclient, t)
 
-	got, err := sjaclient.DeleteRecord(context.TODO(), want)
+	var request v1alpha1.RecordParameters
+	request.Name = want.Name
+	request.Age = want.Age
+	request.Designation = want.Designation
+	request.Location = want.Location
+	request.Todos = want.Todos
+
+	got, err := sjaclient.DeleteRecord(context.TODO(), request)
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got: %v, want: %v", got, want)
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("-want error, +got error: %s", diff)
 	}
+
 }

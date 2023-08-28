@@ -25,8 +25,8 @@ func CreateSjaClient(token string) *SjaClient {
 	return &SjaClient{token: token}
 }
 
-func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordParameters, error) {
-	var response []v1alpha1.RecordParameters
+func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordObservation, error) {
+	var response []v1alpha1.RecordObservation
 
 	err := requests.
 		URL(fmt.Sprintf("%s/records", SIMPLE_JSON_APP_BASEURL)).
@@ -34,14 +34,14 @@ func (s *SjaClient) GetRecords(ctx context.Context) ([]v1alpha1.RecordParameters
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return []v1alpha1.RecordParameters{}, errors.Wrap(err, errGetRecords)
+		return []v1alpha1.RecordObservation{}, errors.Wrap(err, errGetRecords)
 	}
 
 	return response, nil
 }
 
-func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.RecordParameters, error) {
-	var response v1alpha1.RecordParameters
+func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.RecordObservation, error) {
+	var response v1alpha1.RecordObservation
 
 	err := requests.
 		URL(fmt.Sprintf("%s/records/%s", SIMPLE_JSON_APP_BASEURL, name)).
@@ -50,14 +50,14 @@ func (s *SjaClient) GetRecord(ctx context.Context, name string) (v1alpha1.Record
 		Fetch(ctx)
 
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errGetRecord)
+		return v1alpha1.RecordObservation{}, errors.Wrap(err, errGetRecord)
 	}
 
 	return response, nil
 }
 
-func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
-	var response v1alpha1.RecordParameters
+func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error) {
+	var response v1alpha1.RecordObservation
 
 	err := requests.
 		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
@@ -66,14 +66,14 @@ func (s *SjaClient) PostRecord(ctx context.Context, record v1alpha1.RecordParame
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPostRecord)
+		return v1alpha1.RecordObservation{}, errors.Wrap(err, errPostRecord)
 	}
 
 	return response, nil
 }
 
-func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
-	var response v1alpha1.RecordParameters
+func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error) {
+	var response v1alpha1.RecordObservation
 
 	err := requests.
 		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
@@ -83,14 +83,14 @@ func (s *SjaClient) PutRecord(ctx context.Context, record v1alpha1.RecordParamet
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errPutRecord)
+		return v1alpha1.RecordObservation{}, errors.Wrap(err, errPutRecord)
 	}
 
 	return response, nil
 }
 
-func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordParameters, error) {
-	var response v1alpha1.RecordParameters
+func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error) {
+	var response v1alpha1.RecordObservation
 
 	err := requests.
 		URL(fmt.Sprintf("%s/record", SIMPLE_JSON_APP_BASEURL)).
@@ -100,7 +100,7 @@ func (s *SjaClient) DeleteRecord(ctx context.Context, record v1alpha1.RecordPara
 		ToJSON(&response).
 		Fetch(ctx)
 	if err != nil {
-		return v1alpha1.RecordParameters{}, errors.Wrap(err, errDeleteRecord)
+		return v1alpha1.RecordObservation{}, errors.Wrap(err, errDeleteRecord)
 	}
 
 	return response, nil
