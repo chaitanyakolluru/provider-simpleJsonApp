@@ -18,6 +18,7 @@ package record
 
 import (
 	"context"
+	"reflect"
 
 	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
 	apisv1alpha1 "git.heb.com/provider-simplejsonapp/apis/v1alpha1"
@@ -30,7 +31,6 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
-	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -180,17 +180,21 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	// The external resource exists. Copy any output-only fields to their
 	// corresponding entries in our status field.
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
+
 	// Update our "Ready" status condition to reflect the status of the external
 	// resource.
-	switch cr.Status.Name {
+	switch cr.Status.AtProvider.Name {
 	case "":
 		cr.SetConditions(xpv1.Unavailable())
 	default:
 		cr.SetConditions(xpv1.Available())
 	}
 
-	if diff := cmp.Diff(sjaResource, cr.Spec.ForProvider); diff != "" {
+	if sjaResource.Age != cr.Spec.ForProvider.Age ||
+		sjaResource.Location != cr.Spec.ForProvider.Location ||
+		sjaResource.Designation != cr.Spec.ForProvider.Designation ||
+		!reflect.DeepEqual(sjaResource.Todos, cr.Spec.ForProvider.Todos) {
 		return managed.ExternalObservation{
 			ResourceExists:    true,
 			ResourceUpToDate:  false,
@@ -217,7 +221,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalCreation{}, errors.Wrap(err, errCantCreateRecord)
 	}
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
 
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -237,7 +241,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalUpdate{}, errors.Wrap(err, errCantUpdateRecord)
 	}
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
 
 	return managed.ExternalUpdate{
 		// Optionally return any details that may be required to connect to the
