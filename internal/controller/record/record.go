@@ -54,22 +54,22 @@ const (
 // controller from the external client being used for its implementation.
 
 // This also allows mock methods to be setup around the interface, useful when testing controller methods.
-type RegistryClientInterface interface {
+type SjaClientInterface interface {
 	GetRecord(ctx context.Context, name string) (v1alpha1.RecordObservation, error)
 	PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
 	PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
 	DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
 }
 
-type RegistryClientInterfaceObject struct {
+type SjaClientInterfaceObject struct {
 	// update to new client's struct if needed
 	*sjaclient.SjaClient
 }
 
-// Setting up registry client function that's passed to the controller, allowing it to invoke service methods to reconcile external resource state.
+// Setting up simple json app client function that's passed to the controller, allowing it to invoke service methods to reconcile external resource state.
 var (
-	sjaService = func(data []byte) *RegistryClientInterfaceObject {
-		return &RegistryClientInterfaceObject{
+	sjaService = func(data []byte) *SjaClientInterfaceObject {
+		return &SjaClientInterfaceObject{
 			// update to new client's constuctor function if a different one is used
 			SjaClient: sjaclient.CreateSjaClient(string(data)),
 		}
@@ -109,7 +109,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 type connector struct {
 	kube         client.Client
 	usage        resource.Tracker
-	newServiceFn func(creds []byte) *RegistryClientInterfaceObject
+	newServiceFn func(creds []byte) *SjaClientInterfaceObject
 }
 
 // Connect typically produces an ExternalClient by:
@@ -151,7 +151,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 type external struct {
 	// A 'client' used to connect to the external resource API. In practice this
 	// would be something like an AWS SDK client.
-	service RegistryClientInterface
+	service SjaClientInterface
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
