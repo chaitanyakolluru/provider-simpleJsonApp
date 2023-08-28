@@ -6,11 +6,21 @@ import (
 	"testing"
 
 	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
+	"github.com/kelseyhightower/envconfig"
 )
 
+var env_vars struct {
+	Token string
+}
+
+func processEnvVars() string {
+	envconfig.Process("simplejsonapp", &env_vars)
+	return env_vars.Token
+}
+
 func TestGetRecords(t *testing.T) {
-	sjaclient := CreateSjaClient("token")
-	got, err := sjaclient.GetRecords(context.Background())
+	sjaclient := CreateSjaClient(processEnvVars())
+	got, err := sjaclient.GetRecords(context.TODO())
 	if err != nil {
 		t.Errorf("GetRecords() failed with %s", err.Error())
 	}
@@ -18,8 +28,8 @@ func TestGetRecords(t *testing.T) {
 }
 
 func TestGetRecord(t *testing.T) {
-	sjaclient := CreateSjaClient("token")
-	got, err := sjaclient.GetRecord(context.Background(), "chai")
+	sjaclient := CreateSjaClient(processEnvVars())
+	got, err := sjaclient.GetRecord(context.TODO(), "chai")
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
@@ -27,7 +37,7 @@ func TestGetRecord(t *testing.T) {
 }
 
 func TestPostRecord(t *testing.T) {
-	sjaclient := CreateSjaClient("token")
+	sjaclient := CreateSjaClient(processEnvVars())
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,
@@ -35,7 +45,7 @@ func TestPostRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.PostRecord(context.Background(), request)
+	got, err := sjaclient.PostRecord(context.TODO(), request)
 	if err != nil {
 		t.Errorf("PostRecord() failed with %s", err.Error())
 	}
@@ -43,7 +53,7 @@ func TestPostRecord(t *testing.T) {
 }
 
 func TestPutRecord(t *testing.T) {
-	sjaclient := CreateSjaClient("token")
+	sjaclient := CreateSjaClient(processEnvVars())
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,
@@ -51,7 +61,7 @@ func TestPutRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.PutRecord(context.Background(), request)
+	got, err := sjaclient.PutRecord(context.TODO(), request)
 	if err != nil {
 		t.Errorf("PutRecord() failed with %s", err.Error())
 	}
@@ -59,7 +69,7 @@ func TestPutRecord(t *testing.T) {
 }
 
 func TestDeleteRecord(t *testing.T) {
-	sjaclient := CreateSjaClient("token")
+	sjaclient := CreateSjaClient(processEnvVars())
 	request := v1alpha1.RecordParameters{
 		Name:        "chai2",
 		Age:         11,
@@ -67,7 +77,7 @@ func TestDeleteRecord(t *testing.T) {
 		Location:    "happiness",
 		Todos:       []string{"gg"},
 	}
-	got, err := sjaclient.DeleteRecord(context.Background(), request)
+	got, err := sjaclient.DeleteRecord(context.TODO(), request)
 	if err != nil {
 		t.Errorf("GetRecord() failed with %s", err.Error())
 	}
