@@ -48,8 +48,32 @@ const (
 	errCantUpdateRecord = "cannot update record"
 )
 
+// Setup an interface around the methods controller uses to reconcile external resources and create an object that embeds
+// an external client, allowing us to pass requests to the client's implementation of said methods.
+// Allows us to change client in a straightforward manner to a different one if needed in the future and decouples
+// controller from the external client being used for its implementation.
+
+// This also allows mock methods to be setup around the interface, useful when testing controller methods.
+type RegistryClientInterface interface {
+	GetRecord(ctx context.Context, name string) (v1alpha1.RecordObservation, error)
+	PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+	PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+	DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+}
+
+type RegistryClientInterfaceObject struct {
+	// update to new client's struct if needed
+	*sjaclient.SjaClient
+}
+
+// Setting up registry client function that's passed to the controller, allowing it to invoke service methods to reconcile external resource state.
 var (
-	sjaService = func(data []byte) (*sjaclient.SjaClient, error) { return sjaclient.CreateSjaClient(string(data)), nil }
+	sjaService = func(data []byte) *RegistryClientInterfaceObject {
+		return &RegistryClientInterfaceObject{
+			// update to new client's constuctor function if a different one is used
+			SjaClient: sjaclient.CreateSjaClient(string(data)),
+		}
+	}
 )
 
 // Setup adds a controller that reconciles Record managed resources.
@@ -85,7 +109,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 type connector struct {
 	kube         client.Client
 	usage        resource.Tracker
-	newServiceFn func(creds []byte) (*sjaclient.SjaClient, error)
+	newServiceFn func(creds []byte) *RegistryClientInterfaceObject
 }
 
 // Connect typically produces an ExternalClient by:
@@ -114,7 +138,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 		return nil, errors.Wrap(err, errGetCreds)
 	}
 
-	svc, err := c.newServiceFn(data)
+	svc := c.newServiceFn(data)
 	if err != nil {
 		return nil, errors.Wrap(err, errNewClient)
 	}
@@ -127,7 +151,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 type external struct {
 	// A 'client' used to connect to the external resource API. In practice this
 	// would be something like an AWS SDK client.
-	service *sjaclient.SjaClient
+	service *RegistryClientInterfaceObject
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
