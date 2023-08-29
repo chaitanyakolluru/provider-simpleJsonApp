@@ -163,6 +163,44 @@ func TestControllerObserve(t *testing.T) {
 			errorGot:  nil,
 			errorWant: nil,
 		}),
+		"reconciles as an not exists and not updated with an error when getrecord fails": setupCaseStructure(t, setupCaseStructureArgs{
+			reason:      "does not reconcile as not exists and not updated with an error",
+			name:        "record1",
+			age:         0,
+			designation: "desg",
+			location:    "loc",
+			todos:       []string{"todo1", "todo2"},
+
+			mockName:        "record1",
+			mockAge:         0,
+			mockDesignation: "desg",
+			mockLocation:    "loc",
+			mockTodos:       []string{"todo1", "todo2"},
+
+			isExists:  false,
+			isUpdated: false,
+			errorGot:  errors.New("error"),
+			errorWant: errors.New("error"),
+		}),
+		"reconciles as not exists and not updated when name from getrecord doesn't match ": setupCaseStructure(t, setupCaseStructureArgs{
+			reason:      "does not reconcile as not exists and not updated",
+			name:        "record1",
+			age:         0,
+			designation: "desg",
+			location:    "loc",
+			todos:       []string{"todo1", "todo2"},
+
+			mockName:        "record1-notsame",
+			mockAge:         0,
+			mockDesignation: "desg",
+			mockLocation:    "loc",
+			mockTodos:       []string{"todo1", "todo2"},
+
+			isExists:  false,
+			isUpdated: false,
+			errorGot:  errors.New("error"),
+			errorWant: errors.New("error"),
+		}),
 	}
 
 	for name, tc := range cases {
