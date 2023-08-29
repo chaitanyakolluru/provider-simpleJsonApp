@@ -30,7 +30,7 @@ Generally projects are named `provider-<name>`, with `name` being the API being
 managed. Example project names are `provider-aws`, `provider-kubernetes`,
 and `provider-github`.
 
-The [provider-simplejsonapp](https://github.com/chaitanyakolluru/provider-simplejsonapp) repository can be
+The [provider-simplejsonapp](https://git.heb.com/provider-simplejsonapp) repository can be
 used as a starting point for new providers. For [terrajet](https://github.com/crossplane/terrajet)-based providers, the
 [provider-jet-simplejsonapp](https://github.com/crossplane-contrib/provider-jet-simplejsonapp) is
 available.
@@ -43,17 +43,17 @@ Most Crossplane providers include the following files:
       [provider-gcp/README.md](https://github.com/crossplane/provider-gcp/blob/master/README.md)
       as an example)
 - [ ] Code is licensed under the [Apache 2.0
-      License](https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/main/LICENSE)
+      License](https://git.heb.com/provider-simplejsonapp/blob/main/LICENSE)
 - [ ] Include a “Developer Certificate of Origin”. Example:
       [DCO](https://github.com/upbound/build/blob/master/DCO)
 - [ ] Include the CNCF [Code of
       Conduct](https://github.com/crossplane/crossplane/blob/master/CODE_OF_CONDUCT.md)
 - [ ] Update
-      [OWNERS.md](https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/main/OWNERS.md)
+      [OWNERS.md](https://git.heb.com/provider-simplejsonapp/blob/main/OWNERS.md)
       with contacts for project Owners
 - [ ] Ensure `hack/boilerplate.go.txt` (used in Code generation) includes
       Crossplane Authors, Apache license and any other Copyright statements:
-      [https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/main/hack/boilerplate.go.txt](https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/main/hack/boilerplate.go.txt)
+      [https://git.heb.com/provider-simplejsonapp/blob/main/hack/boilerplate.go.txt](https://git.heb.com/provider-simplejsonapp/blob/main/hack/boilerplate.go.txt)
 - [ ] Include Documentation on how to:
   - [ ] Install Provider
   - [ ] Contribute to Development
@@ -68,7 +68,7 @@ There are a number of build tools and processes that are common across the
 Crossplane ecosystem. Using these ensures a consistent development environment
 across projects.
 
-The [provider-simplejsonapp](https://github.com/chaitanyakolluru/provider-simplejsonapp)
+The [provider-simplejsonapp](https://git.heb.com/provider-simplejsonapp)
 repository contains most of these settings.
 
 - [ ] Use the [Upbound build](https://github.com/upbound/build) submodule. (see
@@ -81,7 +81,7 @@ repository contains most of these settings.
 - [ ] Create a [Crossplane
       Package](https://crossplane.io/docs/master/concepts/packages.html)
       configuration (see
-      [package/crossplane.yaml)](https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/main/package/crossplane.yaml)
+      [package/crossplane.yaml)](https://git.heb.com/provider-simplejsonapp/blob/main/package/crossplane.yaml)
 
 ## Deployment of Artifacts
 
@@ -96,7 +96,7 @@ the publish and promotion workflows.
 In general, providers should:
 
 - [ ] Utilize GitHub workflows from
-      <https://github.com/chaitanyakolluru/provider-simplejsonapp/tree/main/.github/workflows>
+      <https://git.heb.com/provider-simplejsonapp/tree/main/.github/workflows>
 - [ ] Create OCI image repos to push Package and Controller images.
 - [ ] Automatically push Provider images and packages via CI
 - [ ] Add GitHub Secrets to push to Docker repository. (To be performed by
@@ -113,6 +113,6 @@ to grant your project access to the GitHub org scoped secrets.
 - [ ] Follow recommendations at
       [https://github.com/crossplane/crossplane/blob/master/GOVERNANCE.md#repository-governance](https://github.com/crossplane/crossplane/blob/master/GOVERNANCE.md#repository-governance)
 - [ ] Enable Issues on your project and configure Issue simplejsonapps (examples at:
-      [.github/ISSUE_TEMPLATE](https://github.com/chaitanyakolluru/provider-simplejsonapp/tree/master/.github/ISSUE_TEMPLATE))
+      [.github/ISSUE_TEMPLATE](https://git.heb.com/provider-simplejsonapp/tree/master/.github/ISSUE_TEMPLATE))
 - [ ] Create Pull Request SimpleJsonApps: (example:
-      [PULL_REQUEST_TEMPLATE.md](https://github.com/chaitanyakolluru/provider-simplejsonapp/blob/master/.github/PULL_REQUEST_TEMPLATE.md))
+      [PULL_REQUEST_TEMPLATE.md](https://git.heb.com/provider-simplejsonapp/blob/master/.github/PULL_REQUEST_TEMPLATE.md))

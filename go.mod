@@ -1,4 +1,4 @@
-module github.com/chaitanyakolluru/provider-simplejsonapp
+module git.heb.com/provider-simplejsonapp
 
 go 1.19
 
@@ -6,7 +6,9 @@ require (
 	github.com/carlmjohnson/requests v0.23.4
 	github.com/crossplane/crossplane-runtime v0.20.0-rc.0.0.20230413174155-c8cff1a7fb74
 	github.com/crossplane/crossplane-tools v0.0.0-20230327091744-4236bf732aa5
+	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.9
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/pkg/errors v0.9.1
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	k8s.io/apimachinery v0.26.3

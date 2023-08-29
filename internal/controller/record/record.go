@@ -18,11 +18,12 @@ package record
 
 import (
 	"context"
+	"reflect"
 
-	"github.com/chaitanyakolluru/provider-simplejsonapp/apis/records/v1alpha1"
-	apisv1alpha1 "github.com/chaitanyakolluru/provider-simplejsonapp/apis/v1alpha1"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record/sjaclient"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/features"
+	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
+	apisv1alpha1 "git.heb.com/provider-simplejsonapp/apis/v1alpha1"
+	"git.heb.com/provider-simplejsonapp/internal/controller/record/sjaclient"
+	"git.heb.com/provider-simplejsonapp/internal/features"
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	"github.com/crossplane/crossplane-runtime/pkg/connection"
 	"github.com/crossplane/crossplane-runtime/pkg/controller"
@@ -30,7 +31,6 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
-	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -48,8 +48,32 @@ const (
 	errCantUpdateRecord = "cannot update record"
 )
 
+// Setup an interface around the methods controller uses to reconcile external resources and create an object that embeds
+// an external client, allowing us to pass requests to the client's implementation of said methods.
+// Allows us to change client in a straightforward manner to a different one if needed in the future and decouples
+// controller from the external client being used for its implementation.
+
+// This also allows mock methods to be setup around the interface, useful when testing controller methods.
+type SjaClientInterface interface {
+	GetRecord(ctx context.Context, name string) (v1alpha1.RecordObservation, error)
+	PostRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+	PutRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+	DeleteRecord(ctx context.Context, record v1alpha1.RecordParameters) (v1alpha1.RecordObservation, error)
+}
+
+type SjaClientInterfaceObject struct {
+	// update to new client's struct if needed
+	*sjaclient.SjaClient
+}
+
+// Setting up simple json app client function that's passed to the controller, allowing it to invoke service methods to reconcile external resource state.
 var (
-	sjaService = func(data []byte) (*sjaclient.SjaClient, error) { return sjaclient.CreateSjaClient(string(data)), nil }
+	sjaService = func(data []byte) *SjaClientInterfaceObject {
+		return &SjaClientInterfaceObject{
+			// update to new client's constuctor function if a different one is used
+			SjaClient: sjaclient.CreateSjaClient(string(data)),
+		}
+	}
 )
 
 // Setup adds a controller that reconciles Record managed resources.
@@ -85,7 +109,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 type connector struct {
 	kube         client.Client
 	usage        resource.Tracker
-	newServiceFn func(creds []byte) (*sjaclient.SjaClient, error)
+	newServiceFn func(creds []byte) *SjaClientInterfaceObject
 }
 
 // Connect typically produces an ExternalClient by:
@@ -114,7 +138,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 		return nil, errors.Wrap(err, errGetCreds)
 	}
 
-	svc, err := c.newServiceFn(data)
+	svc := c.newServiceFn(data)
 	if err != nil {
 		return nil, errors.Wrap(err, errNewClient)
 	}
@@ -127,7 +151,7 @@ func (c *connector) Connect(ctx context.Context, mg resource.Managed) (managed.E
 type external struct {
 	// A 'client' used to connect to the external resource API. In practice this
 	// would be something like an AWS SDK client.
-	service *sjaclient.SjaClient
+	service SjaClientInterface
 }
 
 func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.ExternalObservation, error) {
@@ -156,17 +180,21 @@ func (c *external) Observe(ctx context.Context, mg resource.Managed) (managed.Ex
 	// The external resource exists. Copy any output-only fields to their
 	// corresponding entries in our status field.
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
+
 	// Update our "Ready" status condition to reflect the status of the external
 	// resource.
-	switch cr.Status.Name {
+	switch cr.Status.AtProvider.Name {
 	case "":
 		cr.SetConditions(xpv1.Unavailable())
 	default:
 		cr.SetConditions(xpv1.Available())
 	}
 
-	if diff := cmp.Diff(sjaResource, cr.Spec.ForProvider); diff != "" {
+	if sjaResource.Age != cr.Spec.ForProvider.Age ||
+		sjaResource.Location != cr.Spec.ForProvider.Location ||
+		sjaResource.Designation != cr.Spec.ForProvider.Designation ||
+		!reflect.DeepEqual(sjaResource.Todos, cr.Spec.ForProvider.Todos) {
 		return managed.ExternalObservation{
 			ResourceExists:    true,
 			ResourceUpToDate:  false,
@@ -193,7 +221,7 @@ func (c *external) Create(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalCreation{}, errors.Wrap(err, errCantCreateRecord)
 	}
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
 
 	return managed.ExternalCreation{
 		// Optionally return any details that may be required to connect to the
@@ -213,7 +241,7 @@ func (c *external) Update(ctx context.Context, mg resource.Managed) (managed.Ext
 		return managed.ExternalUpdate{}, errors.Wrap(err, errCantUpdateRecord)
 	}
 
-	cr.Status.RecordObservation = v1alpha1.RecordObservation(sjaResource)
+	cr.Status.AtProvider = sjaResource
 
 	return managed.ExternalUpdate{
 		// Optionally return any details that may be required to connect to the

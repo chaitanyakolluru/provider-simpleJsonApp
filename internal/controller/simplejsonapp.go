@@ -20,8 +20,8 @@ import (
 	"github.com/crossplane/crossplane-runtime/pkg/controller"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/config"
-	"github.com/chaitanyakolluru/provider-simplejsonapp/internal/controller/record"
+	"git.heb.com/provider-simplejsonapp/internal/controller/config"
+	"git.heb.com/provider-simplejsonapp/internal/controller/record"
 )
 
 // Setup creates all SimpleJsonApp controllers with the supplied logger and adds them to
