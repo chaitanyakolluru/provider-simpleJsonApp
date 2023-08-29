@@ -21,11 +21,12 @@ import (
 	"testing"
 
 	"git.heb.com/provider-simplejsonapp/apis/records/v1alpha1"
-	"git.heb.com/provider-simplejsonapp/internal/controller/record/sjaclient"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	"github.com/crossplane/crossplane-runtime/pkg/resource"
 	"github.com/crossplane/crossplane-runtime/pkg/test"
+	gomock "github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"github.com/pkg/errors"
 )
 
 // Unlike many Kubernetes projects Crossplane does not use third party testing
@@ -37,7 +38,7 @@ import (
 // https://github.com/crossplane/crossplane/blob/master/CONTRIBUTING.md#contributing-code
 
 type fields struct {
-	service *sjaclient.SjaClient
+	service *MockSjaClientInterface
 }
 
 type args struct {
@@ -45,50 +46,130 @@ type args struct {
 	mg  resource.Managed
 }
 
-type want struct {
-	o   managed.ExternalObservation
-	err error
-}
-
-type caseStructure map[string]struct {
-	reason string
-	fields fields
-	args   args
-	want   want
-}
-
-var setupArgs = func(testRecord v1alpha1.RecordParameters) args {
+var setupArgs = func(name, designation, location string, age int, todos []string) args {
 	return args{
-		ctx: context.Background(),
-		mg:  &v1alpha1.Record{Spec: v1alpha1.RecordSpec{ForProvider: testRecord}}}
-}
-
-var setupWant = func(resourceExists, resouceUpToDate bool) want {
-	return want{
-		o: managed.ExternalObservation{
-			ResourceExists:    resourceExists,
-			ResourceUpToDate:  resouceUpToDate,
-			ConnectionDetails: managed.ConnectionDetails{},
+		ctx: context.TODO(),
+		mg: &v1alpha1.Record{
+			Spec: v1alpha1.RecordSpec{
+				ForProvider: v1alpha1.RecordParameters{
+					Name:        name,
+					Age:         age,
+					Designation: designation,
+					Location:    location,
+					Todos:       todos,
+				},
+			},
 		},
-		err: nil}
-}
-
-var setupTestCase = func(name, reason string, resourceExists, resouceUpToDate bool, testRecord v1alpha1.RecordParameters) caseStructure {
-	return caseStructure{name: {
-		reason: reason,
-		fields: fields{service: sjaclient.CreateSjaClient("token")},
-		args:   setupArgs(testRecord),
-		want:   setupWant(resourceExists, resouceUpToDate),
-	},
 	}
 }
 
-func runTestCases(t *testing.T, cases caseStructure) {
+func returnMockObservationObject(mockName, mockLocation, mockDesignation string, mockAge int, mockTodos []string) v1alpha1.RecordObservation {
+	return v1alpha1.RecordObservation{
+		Name:        mockName,
+		Age:         mockAge,
+		Location:    mockLocation,
+		Designation: mockDesignation,
+		Todos:       mockTodos,
+	}
+}
+
+func setupMocksForSjaClientInterface(t *testing.T, mockName, mockLocation, mockDesignation string, mockAge int, mockTodos []string, mockError error) *MockSjaClientInterface {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRegistryClient := NewMockSjaClientInterface(ctrl)
+	mockRegistryClient.EXPECT().GetRecord(context.TODO(), gomock.Any()).AnyTimes().Return(returnMockObservationObject(mockName, mockLocation, mockDesignation, mockAge, mockTodos), mockError)
+	mockRegistryClient.EXPECT().PostRecord(context.TODO(), gomock.Any()).AnyTimes().Return(returnMockObservationObject(mockName, mockLocation, mockDesignation, mockAge, mockTodos), mockError)
+	mockRegistryClient.EXPECT().PutRecord(context.TODO(), gomock.Any()).AnyTimes().Return(returnMockObservationObject(mockName, mockLocation, mockDesignation, mockAge, mockTodos), mockError)
+	mockRegistryClient.EXPECT().DeleteRecord(context.TODO(), gomock.Any()).AnyTimes().Return(returnMockObservationObject(mockName, mockLocation, mockDesignation, mockAge, mockTodos), mockError)
+
+	return mockRegistryClient
+}
+
+// Observe() method test cases
+func TestControllerObserve(t *testing.T) {
+
+	type want struct {
+		o   managed.ExternalObservation
+		err error
+	}
+
+	type caseStructure struct {
+		reason string
+		fields fields
+		args   args
+		want   want
+	}
+
+	var setupWant = func(isExists, isUpdated bool, errorWant error) want {
+		return want{
+			o: managed.ExternalObservation{
+				ResourceExists:    isExists,
+				ResourceUpToDate:  isUpdated,
+				ConnectionDetails: managed.ConnectionDetails{},
+			},
+			err: errorWant,
+		}
+	}
+
+	type setupCaseStructureArgs struct {
+		reason      string
+		name        string
+		age         int
+		designation string
+		location    string
+		todos       []string
+
+		mockName        string
+		mockLocation    string
+		mockDesignation string
+		mockAge         int
+		mockTodos       []string
+
+		isExists  bool
+		isUpdated bool
+		errorGot  error
+		errorWant error
+	}
+
+	var setupCaseStructure = func(t *testing.T, args setupCaseStructureArgs) caseStructure {
+		return caseStructure{
+			reason: args.reason,
+			fields: fields{
+				service: setupMocksForSjaClientInterface(t, args.mockName, args.mockLocation, args.mockDesignation, args.mockAge, args.mockTodos, args.errorGot),
+			},
+			args: setupArgs(args.name, args.designation, args.location, args.age, args.todos),
+			want: setupWant(args.isExists, args.isUpdated, args.errorWant),
+		}
+	}
+
+	cases := map[string]caseStructure{
+		"reconciles as exists and updated": setupCaseStructure(t, setupCaseStructureArgs{
+			reason:      "does not reconcile as exists and updated",
+			name:        "record1",
+			age:         0,
+			designation: "desg",
+			location:    "loc",
+			todos:       []string{"todo1", "todo2"},
+
+			mockName:        "record1",
+			mockAge:         0,
+			mockDesignation: "desg",
+			mockLocation:    "loc",
+			mockTodos:       []string{"todo1", "todo2"},
+
+			isExists:  true,
+			isUpdated: true,
+			errorGot:  nil,
+			errorWant: nil,
+		}),
+	}
+
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
 			e := external{service: tc.fields.service}
 			got, err := e.Observe(tc.args.ctx, tc.args.mg)
-			if diff := cmp.Diff(tc.want.err, err, test.EquateErrors()); diff != "" {
+			if diff := cmp.Diff(tc.want.err, errors.Cause(err), test.EquateErrors()); diff != "" {
 				t.Errorf("\n%s\ne.Observe(...): -want error, +got error:\n%s\n", tc.reason, diff)
 			}
 			if diff := cmp.Diff(tc.want.o, got); diff != "" {
@@ -96,45 +177,4 @@ func runTestCases(t *testing.T, cases caseStructure) {
 			}
 		})
 	}
-}
-
-// Observe() method test cases
-func TestObserveNoChange(t *testing.T) {
-
-	cases := setupTestCase("returns as object exists and upto date", "doesn't exist", true, true, v1alpha1.RecordParameters{
-		Name:        "chai3",
-		Age:         11,
-		Designation: "happiness",
-		Location:    "happiness",
-		Todos:       []string{"gg"},
-	})
-
-	runTestCases(t, cases)
-
-}
-
-func TestObserveDoesntExist(t *testing.T) {
-
-	cases := setupTestCase("returns as object doesn't exist", "doesn't exist", false, false, v1alpha1.RecordParameters{
-		Name:        "RECORD DOESN'T EXIST",
-		Age:         11,
-		Designation: "happiness CHANGED",
-		Location:    "happiness",
-		Todos:       []string{"gg"},
-	})
-
-	runTestCases(t, cases)
-}
-
-func TestObserveExistAndNotUpToDate(t *testing.T) {
-
-	cases := setupTestCase("returns as object exist but not upto date", "not upto date", true, false, v1alpha1.RecordParameters{
-		Name:        "chai3",
-		Age:         11,
-		Designation: "happiness CHANGED",
-		Location:    "happiness",
-		Todos:       []string{"gg"},
-	})
-
-	runTestCases(t, cases)
 }
