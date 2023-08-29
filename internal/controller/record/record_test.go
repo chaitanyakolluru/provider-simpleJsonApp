@@ -472,3 +472,68 @@ func TestControllerUpdate(t *testing.T) {
 	}
 
 }
+
+func TestControllerDelete(t *testing.T) {
+	type want struct {
+		err error
+	}
+	type caseStructure struct {
+		reason string
+		fields fields
+		args   args
+		want   want
+	}
+
+	var setupWant = func(errorWant error) want {
+		return want{
+			err: errorWant,
+		}
+	}
+
+	type setupCaseStructureArgs struct {
+		reason    string
+		name      string
+		mockName  string
+		errorGot  error
+		errorWant error
+	}
+
+	var setupCaseStructure = func(t *testing.T, args setupCaseStructureArgs) caseStructure {
+		return caseStructure{
+			reason: args.reason,
+			fields: fields{
+				service: setupMocksForSjaClientInterface(t, args.mockName, "", "", 0, []string{}, args.errorGot),
+			},
+			args: setupArgs(args.name, "", "", 0, []string{}),
+			want: setupWant(args.errorWant),
+		}
+	}
+
+	cases := map[string]caseStructure{
+		"results as resource deleted": setupCaseStructure(t, setupCaseStructureArgs{
+			reason:    "does not result as a deleted resource",
+			name:      "record1",
+			mockName:  "record1",
+			errorGot:  nil,
+			errorWant: nil,
+		}),
+		"results an error": setupCaseStructure(t, setupCaseStructureArgs{
+			reason:    "does not return error",
+			name:      "record1",
+			mockName:  "record1",
+			errorGot:  errors.New("create error"),
+			errorWant: errors.New("create error"),
+		}),
+	}
+
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			e := external{service: tc.fields.service}
+			_, err := e.Update(tc.args.ctx, tc.args.mg)
+			if diff := cmp.Diff(tc.want.err, errors.Cause(err), test.EquateErrors()); diff != "" {
+				t.Errorf("\n%s\ne.Observe(...): -want error, +got error:\n%s\n", tc.reason, diff)
+			}
+		})
+	}
+
+}
